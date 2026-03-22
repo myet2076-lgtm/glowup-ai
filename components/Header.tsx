@@ -10,19 +10,31 @@ interface Props {
   wishlistCount: number;
   masterPhoto: string | null;
   onSetMasterPhoto: (img: string | null) => void;
+  validateFace?: (photo: string) => Promise<boolean>;
 }
 
-const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto }) => {
+const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto, validateFace }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => onSetMasterPhoto(reader.result as string);
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    setUploadError(null);
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const dataURL = reader.result as string;
+      if (validateFace) {
+        const ok = await validateFace(dataURL);
+        if (!ok) {
+          setUploadError('Please use a clear face selfie.');
+          return;
+        }
+      }
+      onSetMasterPhoto(dataURL);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (

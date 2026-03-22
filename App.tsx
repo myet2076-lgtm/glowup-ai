@@ -262,6 +262,7 @@ const App: React.FC = () => {
         wishlistCount={wishlist.length}
         masterPhoto={masterFacePhoto}
         onSetMasterPhoto={setMasterFacePhoto}
+        validateFace={validateFace}
       />
       
       <main className="flex-grow container mx-auto px-4 py-8 max-w-5xl">
