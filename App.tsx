@@ -378,12 +378,19 @@ const App: React.FC = () => {
             inventory={inventory} 
             userPhoto={localInspoFace || masterFacePhoto}
             inspoPhoto={inspoPhoto}
-            onBack={() => setCurrentPage('inspiration')}
+            onBack={() => {
+              if (resultSource === 'quiz') setCurrentPage('landing');
+              else if (resultSource === 'celebrity') setCurrentPage('celebrity');
+              else setCurrentPage('inspiration');
+            }}
             onRestart={handleRestart}
             onTryOn={handleTryOn}
             onAddToWishlist={(p) => setWishlist(prev => [...prev, p])}
             tryOnImage={tryOnImage}
             isCelebrityTwin={resultSource === 'celebrity'}
+            onFaceAnalysis={() => processFaceAnalysis()}
+            onCelebrity={() => setCurrentPage('celebrity')}
+            onHairLab={() => setCurrentPage('hair-lab')}
           />
         )}
       </main>
