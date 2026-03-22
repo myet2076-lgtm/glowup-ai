@@ -272,7 +272,7 @@ const App: React.FC = () => {
         {loading && (
           <div className="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-8 text-center space-y-6" role="status" aria-live="polite">
             <div className="w-64 bg-pink-50 h-3 rounded-full overflow-hidden border border-pink-100">
-              <div className="h-full bg-pink-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
+              <div className="h-full bg-pink-500 transition-all duration-300" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="Analysis progress" style={{ width: `${progress}%` }}></div>
             </div>
             <p className="text-pink-600 font-bold text-xl italic serif">{loadingMessage}</p>
           </div>
