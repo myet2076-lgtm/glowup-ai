@@ -72,7 +72,7 @@ const PhotoUpload: React.FC<Props> = ({
         {preview ? (
           <div className="space-y-6">
             <div className="relative group max-w-sm mx-auto">
-              <img src={preview} className="w-full rounded-3xl shadow-2xl object-cover h-[350px] border-4 border-white transition-transform hover:scale-[1.01]" />
+              <img src={preview} alt="Uploaded photo preview" className="w-full rounded-3xl shadow-2xl object-cover h-[350px] border-4 border-white transition-transform hover:scale-[1.01]" />
               <button 
                 type="button"
                 onClick={handleRemove}
