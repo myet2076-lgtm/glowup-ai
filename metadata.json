@@ -1,0 +1,7 @@
+{
+  "name": "GlowUp AI - Your Personal Makeup Artist",
+  "description": "A personalized makeup assistant that uses AI to find your style, match you with celebrity looks, and recreate inspiration photos using your own product inventory.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
