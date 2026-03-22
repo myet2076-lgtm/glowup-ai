@@ -22,6 +22,7 @@ import ResultsView from './components/ResultsView';
 import FaceAnalysisView from './components/FaceAnalysisView';
 import WishlistView from './components/WishlistView';
 import HairLabView from './components/HairLabView';
+import InspirationLab from './components/InspirationLab';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<AppState>('landing');
@@ -67,6 +68,15 @@ const App: React.FC = () => {
   };
 
   const validateFace = async (photo: string): Promise<boolean> => {
+    try {
+      return await validateFaceImage(photo.split(',')[1]);
+    } catch {
+      return false;
+    }
+  };
+
+  /** Legacy wrapper that shows global loading + alerts — used by celebrity, face analysis, hair lab */
+  const validateFaceWithUI = async (photo: string): Promise<boolean> => {
     setLoading(true);
     setLoadingMessage("Verifying selfie...");
     try {
@@ -91,7 +101,7 @@ const App: React.FC = () => {
       return;
     }
     
-    const isValid = await validateFace(activePhoto);
+    const isValid = await validateFaceWithUI(activePhoto);
     if (!isValid) return;
 
     setLoading(true);
@@ -123,7 +133,7 @@ const App: React.FC = () => {
       return;
     }
 
-    const isValid = await validateFace(activePhoto);
+    const isValid = await validateFaceWithUI(activePhoto);
     if (!isValid) return;
 
     setLoading(true);
@@ -144,7 +154,7 @@ const App: React.FC = () => {
       return;
     }
 
-    const isValid = await validateFace(activeFace);
+    const isValid = await validateFaceWithUI(activeFace);
     if (!isValid) return;
 
     setLoading(true);
@@ -156,6 +166,28 @@ const App: React.FC = () => {
       setCurrentPage('results');
     } catch (err) { alert("Inspiration failed!"); }
     finally { setLoading(false); }
+  };
+
+  const processInspirationSubmit = async (
+    newInspoPhoto: string | null,
+    facePhoto: string,
+    newInspoText: string
+  ) => {
+    setInspoPhoto(newInspoPhoto);
+    setLocalInspoFace(facePhoto);
+    setInspoText(newInspoText);
+    setLoading(true);
+    setLoadingMessage("Analyzing inspiration...");
+    try {
+      const result = await analyzeInspirationLook(newInspoPhoto, facePhoto, newInspoText);
+      setAnalysis(result);
+      setResultSource('inspiration');
+      setCurrentPage('results');
+    } catch {
+      throw new Error('Analysis failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleTryOn = async () => {
@@ -173,7 +205,7 @@ const App: React.FC = () => {
   const handleHairTryOn = async (style: string, color: string) => {
     if (!masterFacePhoto) return;
 
-    const isValid = await validateFace(masterFacePhoto);
+    const isValid = await validateFaceWithUI(masterFacePhoto);
     if (!isValid) return;
 
     setLoading(true);
@@ -253,7 +285,7 @@ const App: React.FC = () => {
             resultImage={hairResultImage}
             onSetProfile={async (img) => {
               if (img) {
-                const ok = await validateFace(img);
+                const ok = await validateFaceWithUI(img);
                 if (ok) setMasterFacePhoto(img);
               } else {
                 setMasterFacePhoto(null);
@@ -274,7 +306,7 @@ const App: React.FC = () => {
             useProfileOption={!!masterFacePhoto}
             onUseProfile={() => processFaceAnalysis(masterFacePhoto!)}
             onSetAsMaster={async (img) => {
-               const ok = await validateFace(img);
+               const ok = await validateFaceWithUI(img);
                if (ok) setMasterFacePhoto(img);
             }}
             isMasterSet={!!masterFacePhoto}
@@ -302,7 +334,7 @@ const App: React.FC = () => {
             useProfileOption={!!masterFacePhoto}
             onUseProfile={() => processCelebrity(masterFacePhoto!)}
             onSetAsMaster={async (img) => {
-               const ok = await validateFace(img);
+               const ok = await validateFaceWithUI(img);
                if (ok) setMasterFacePhoto(img);
             }}
             isMasterSet={!!masterFacePhoto}
@@ -310,105 +342,17 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'inspiration' && (
-          <div className="space-y-8 py-8 animate-in slide-in-from-bottom-8">
-             <div className="flex items-center justify-between">
-                <button onClick={() => setCurrentPage('landing')} className="text-gray-400 hover:text-pink-500 flex items-center text-sm transition-colors">← Back</button>
-                <div className="text-center">
-                   <h1 className="serif text-4xl text-pink-700">Inspiration Lab</h1>
-                   <p className="text-xs text-gray-400 uppercase font-black tracking-widest mt-1">Recreate any aesthetic</p>
-                </div>
-                <div className="w-10"></div>
-             </div>
-
-             <div className="grid md:grid-cols-2 gap-10">
-                {/* Left Side: Inspiration Source */}
-                <div className="space-y-6">
-                   <h3 className="text-xs font-black text-pink-400 uppercase tracking-widest mb-4">1. The Inspiration</h3>
-                   <PhotoUpload 
-                    title="Inspo Image" 
-                    description="Upload the look you want. JPEG/PNG." 
-                    onUpload={setInspoPhoto} 
-                    compact 
-                   />
-                   <div className="bg-white p-6 rounded-[32px] border border-pink-50 shadow-xl space-y-4">
-                    <div className="flex items-center justify-between">
-                       <label className="text-xs font-black text-pink-400 uppercase tracking-widest">Description</label>
-                       <span className="text-[10px] text-gray-300">Optional</span>
-                    </div>
-                    <textarea 
-                      placeholder="e.g. 'Golden hour glow with smoked-out liner and glossy lips'..."
-                      className="w-full p-4 rounded-2xl border border-pink-100 outline-none h-28 focus:ring-2 ring-pink-200 text-sm placeholder:text-gray-300 transition-all"
-                      value={inspoText}
-                      onChange={(e) => setInspoText(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                {/* Right Side: User Canvas */}
-                <div className="space-y-6">
-                   <h3 className="text-xs font-black text-pink-400 uppercase tracking-widest mb-4">2. Your Canvas</h3>
-                   
-                   {!localInspoFace && masterFacePhoto ? (
-                      <div className="space-y-6">
-                        <div className="relative h-[380px] rounded-[40px] overflow-hidden shadow-2xl border-4 border-white group">
-                           <img src={masterFacePhoto} className="w-full h-full object-cover" />
-                           <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button 
-                                onClick={() => setLocalInspoFace(null)} // This state is tricky, if it's null we show PFP.
-                                className="bg-white text-gray-800 px-6 py-2 rounded-full text-xs font-bold shadow-lg"
-                              >
-                                Using Profile Photo
-                              </button>
-                           </div>
-                        </div>
-                        <button 
-                           onClick={() => setLocalInspoFace('PENDING_UPLOAD')} 
-                           className="w-full py-4 border-2 border-dashed border-pink-200 text-pink-400 rounded-[24px] text-xs font-bold uppercase hover:bg-pink-50 transition-all"
-                        >
-                          Change to New Upload
-                        </button>
-                      </div>
-                   ) : (
-                     <div className="space-y-4">
-                        <PhotoUpload 
-                          title="Your Selfie" 
-                          description="Clear face photo for analysis. JPEG/PNG." 
-                          onUpload={async (img) => {
-                            if (img) {
-                              const ok = await validateFace(img);
-                              if (ok) setLocalInspoFace(img);
-                            } else {
-                              setLocalInspoFace(null);
-                            }
-                          }} 
-                          compact 
-                          useProfileOption={!!masterFacePhoto}
-                          onUseProfile={() => setLocalInspoFace(null)}
-                        />
-                        {localInspoFace && localInspoFace !== 'PENDING_UPLOAD' && (
-                           <button 
-                              onClick={() => setLocalInspoFace(null)}
-                              className="w-full text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-pink-500 transition-colors"
-                           >
-                             Reset to Profile Photo
-                           </button>
-                        )}
-                     </div>
-                   )}
-                </div>
-             </div>
-
-             <div className="flex flex-col items-center pt-8 border-t border-pink-50 space-y-4">
-               <button 
-                  disabled={(!localInspoFace && !masterFacePhoto) || (!inspoPhoto && !inspoText) || localInspoFace === 'PENDING_UPLOAD'} 
-                  onClick={processInspiration} 
-                  className="bg-pink-500 text-white px-16 py-6 rounded-[24px] font-black uppercase tracking-widest shadow-2xl hover:bg-pink-600 active:scale-95 transition-all disabled:opacity-30 disabled:grayscale"
-               >
-                 Glow Up AI ✨
-               </button>
-               <button onClick={handleRestart} className="text-gray-400 text-xs font-bold uppercase tracking-[0.2em] hover:text-pink-500 transition-colors">Start Over</button>
-             </div>
-          </div>
+          <InspirationLab
+            masterFacePhoto={masterFacePhoto}
+            onBack={() => setCurrentPage('landing')}
+            onQuiz={() => setCurrentPage('quiz')}
+            onSubmit={processInspirationSubmit}
+            onSetMasterPhoto={setMasterFacePhoto}
+            validateFace={validateFace}
+            initialInspoPhoto={inspoPhoto}
+            initialInspoText={inspoText}
+            initialFace={localInspoFace}
+          />
         )}
 
         {currentPage === 'inventory' && (
