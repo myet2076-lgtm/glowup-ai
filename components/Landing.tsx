@@ -11,14 +11,15 @@ interface Props {
 
 const ExploreItem = ({ label, onClick, tabIndex }: { label: string; onClick: () => void; tabIndex: number }) => (
   <button
+    type="button"
     onClick={onClick}
     tabIndex={tabIndex}
     className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-white/60 backdrop-blur-sm border border-pink-100 rounded-2xl hover:bg-white/80 hover:border-pink-200 hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
   >
-    <span className="text-xs font-medium text-gray-600 group-hover:text-pink-600 tracking-wide">
+    <span className="text-sm font-medium text-gray-600 group-hover:text-pink-600 tracking-wide">
       {label}
     </span>
-    <span className="text-xs text-pink-400 group-hover:text-pink-600 transition-colors">&rarr;</span>
+    <span className="text-sm text-pink-400 group-hover:text-pink-600 transition-colors">&rarr;</span>
   </button>
 );
 
@@ -63,12 +64,14 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
 
         <div className="relative mt-12 flex flex-col items-center gap-4">
           <button
+            type="button"
             onClick={() => onInspiration('upload')}
             className="bg-pink-600 hover:bg-pink-700 active:scale-[0.97] text-white px-12 py-4 min-h-[44px] rounded-full font-bold uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-pink-300/50 transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
           >
             Upload Inspiration
           </button>
           <button
+            type="button"
             onClick={() => onInspiration('selfie')}
             className="text-sm text-pink-600 hover:text-pink-700 underline underline-offset-4 decoration-pink-300 hover:decoration-pink-500 transition-all py-3 min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
           >
@@ -80,6 +83,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
       {/* Quiz fallback */}
       <div className="text-center mt-20">
         <button
+          type="button"
           onClick={onQuiz}
           className="group inline-flex items-center gap-1.5 py-3 px-4 min-h-[44px] text-pink-600 hover:text-pink-700 transition-colors text-sm font-medium focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
         >
@@ -91,6 +95,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
       {/* Explore section */}
       <div className="text-center mt-20">
         <button
+          type="button"
           ref={toggleRef}
           onClick={handleToggle}
           aria-expanded={exploreOpen}
