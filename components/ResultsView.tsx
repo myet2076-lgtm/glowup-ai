@@ -40,9 +40,10 @@ const ResultsView: React.FC<Props> = ({
     );
 
   const handleDownload = () => {
+    if (!tryOnImage) return;
     const link = document.createElement('a');
     link.download = `glowup-${analysis.styleName}.png`;
-    link.href = tryOnImage || userPhoto || '';
+    link.href = tryOnImage;
     link.click();
   };
 
@@ -88,23 +89,25 @@ const ResultsView: React.FC<Props> = ({
         <p className="font-light text-gray-600 text-base leading-relaxed">
           {analysis.description}
         </p>
-        <div className="flex gap-4 flex-wrap">
-          {analysis.colorPalette.map((color, i) => (
-            <div key={i} className="flex flex-col items-center gap-1.5">
-              <div
-                className="w-10 h-10 rounded-full border border-white shadow-sm"
-                style={{ backgroundColor: color }}
-              />
-              <span className="text-xs text-gray-500">{color}</span>
-            </div>
-          ))}
-        </div>
+        {analysis.colorPalette.length > 0 && (
+          <div className="flex gap-4 flex-wrap">
+            {analysis.colorPalette.map((color, i) => (
+              <div key={i} className="flex flex-col items-center gap-1.5">
+                <div
+                  className="w-10 h-10 rounded-full border border-white shadow-sm"
+                  style={{ backgroundColor: color }}
+                />
+                <span className="text-xs text-gray-500">{color}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── Photo Comparison ── */}
       <section className="space-y-3">
         <h2 className="sr-only">Photo Comparison</h2>
-        <div className="grid grid-cols-2 gap-3 rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden">
           <div className="relative aspect-[3/4] bg-gray-100">
             {userPhoto ? (
               <img
@@ -151,7 +154,7 @@ const ResultsView: React.FC<Props> = ({
             Try This Look
           </button>
         )}
-        {(tryOnImage || userPhoto) && (
+        {tryOnImage && (
           <button
             type="button"
             onClick={handleDownload}
@@ -163,126 +166,132 @@ const ResultsView: React.FC<Props> = ({
       </div>
 
       {/* ── Tutorial Steps ── */}
-      <section className="space-y-6">
-        <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
-          Step-by-Step Tutorial
-        </h2>
-        <div className="space-y-8">
-          {analysis.tutorialSteps.map((step, idx) => (
-            <div key={idx} className="flex gap-4">
-              <span className="serif text-2xl text-pink-300 font-light flex-shrink-0 w-8 text-right">
-                {idx + 1}
-              </span>
-              <div className="space-y-2 flex-1">
-                <h3 className="text-sm font-bold text-gray-800">{step.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {step.instruction}
-                </p>
-                {step.proTip && (
-                  <p className="text-sm italic text-gray-500">{step.proTip}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Product Recommendations ── */}
-      <section className="space-y-6">
-        <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
-          Recommended Products
-        </h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          {analysis.recommendedProducts.map((product, i) => {
-            const match = getInventoryMatch(product.name);
-            return (
-              <div
-                key={i}
-                className="bg-white rounded-2xl border border-pink-50 p-6 flex flex-col justify-between"
-              >
-                <div className="mb-4">
-                  {product.brand && (
-                    <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">
-                      {product.brand}
-                    </p>
-                  )}
-                  <h3 className="text-sm font-bold text-gray-800">
-                    {product.name}
-                  </h3>
-                  {product.category && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      {product.category}
-                    </p>
+      {analysis.tutorialSteps.length > 0 && (
+        <section className="space-y-6">
+          <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
+            Step-by-Step Tutorial
+          </h2>
+          <div className="space-y-8">
+            {analysis.tutorialSteps.map((step, idx) => (
+              <div key={idx} className="flex gap-4">
+                <span className="serif text-2xl text-pink-300 font-light flex-shrink-0 w-8 text-right">
+                  {idx + 1}
+                </span>
+                <div className="space-y-2 flex-1">
+                  <h3 className="text-sm font-bold text-gray-800">{step.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {step.instruction}
+                  </p>
+                  {step.proTip && (
+                    <p className="text-sm italic text-gray-500">{step.proTip}</p>
                   )}
                 </div>
-                {match ? (
-                  <p className="text-sm font-medium text-green-600">
-                    In Your Collection ✓
-                  </p>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => onAddToWishlist(product)}
-                    className="w-full min-h-[44px] py-3 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl text-sm font-medium active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
-                  >
-                    Add to Wishlist
-                  </button>
-                )}
               </div>
-            );
-          })}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Product Recommendations ── */}
+      {analysis.recommendedProducts.length > 0 && (
+        <section className="space-y-6">
+          <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
+            Recommended Products
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {analysis.recommendedProducts.map((product, i) => {
+              const match = getInventoryMatch(product.name);
+              return (
+                <div
+                  key={i}
+                  className="bg-white rounded-2xl border border-pink-50 p-6 flex flex-col justify-between"
+                >
+                  <div className="mb-4">
+                    {product.brand && (
+                      <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">
+                        {product.brand}
+                      </p>
+                    )}
+                    <h3 className="text-sm font-bold text-gray-800">
+                      {product.name}
+                    </h3>
+                    {product.category && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        {product.category}
+                      </p>
+                    )}
+                  </div>
+                  {match ? (
+                    <p className="text-sm font-medium text-green-600">
+                      In Your Collection ✓
+                    </p>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onAddToWishlist(product)}
+                      className="w-full min-h-[44px] py-3 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl text-sm font-medium active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                    >
+                      Add to Wishlist
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ── Tutorial Links ── */}
-      <section className="space-y-6">
-        <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
-          Learn More
-        </h2>
-        <div className="grid gap-3">
-          {analysis.tutorialLinks.map((link, i) => (
-            <a
-              key={i}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between bg-white rounded-2xl border border-pink-50 p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all group"
-            >
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">
-                  {link.platform}
-                </p>
-                <p className="text-sm font-medium text-gray-800 mt-0.5">
-                  {link.title}
-                </p>
-              </div>
-              <span className="text-pink-400 group-hover:text-pink-600 transition-colors text-lg">
-                &rarr;
-              </span>
-            </a>
-          ))}
-          {analysis.tikTokSearchQuery && (
-            <a
-              href={`https://www.tiktok.com/search?q=${encodeURIComponent(analysis.tikTokSearchQuery)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between bg-white rounded-2xl border border-pink-50 p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all group"
-            >
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">
-                  TikTok
-                </p>
-                <p className="text-sm font-medium text-gray-800 mt-0.5">
-                  {analysis.tikTokSearchQuery}
-                </p>
-              </div>
-              <span className="text-pink-400 group-hover:text-pink-600 transition-colors text-lg">
-                &rarr;
-              </span>
-            </a>
-          )}
-        </div>
-      </section>
+      {(analysis.tutorialLinks.length > 0 || analysis.tikTokSearchQuery) && (
+        <section className="space-y-6">
+          <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
+            Learn More
+          </h2>
+          <div className="grid gap-3">
+            {analysis.tutorialLinks.map((link, i) => (
+              <a
+                key={i}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between bg-white rounded-2xl border border-pink-50 p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all group focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-2xl"
+              >
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">
+                    {link.platform}
+                  </p>
+                  <p className="text-sm font-medium text-gray-800 mt-0.5">
+                    {link.title}
+                  </p>
+                </div>
+                <span className="text-pink-400 group-hover:text-pink-600 transition-colors text-lg">
+                  &rarr;
+                </span>
+              </a>
+            ))}
+            {analysis.tikTokSearchQuery && (
+              <a
+                href={`https://www.tiktok.com/search?q=${encodeURIComponent(analysis.tikTokSearchQuery)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between bg-white rounded-2xl border border-pink-50 p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all group focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-2xl"
+              >
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">
+                    TikTok
+                  </p>
+                  <p className="text-sm font-medium text-gray-800 mt-0.5">
+                    {analysis.tikTokSearchQuery}
+                  </p>
+                </div>
+                <span className="text-pink-400 group-hover:text-pink-600 transition-colors text-lg">
+                  &rarr;
+                </span>
+              </a>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ── Branch Explore ── */}
       {showExplore && (

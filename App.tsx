@@ -116,6 +116,7 @@ const App: React.FC = () => {
   };
 
   const processQuiz = async (answers: QuizAnswers) => {
+    setTryOnImage(null);
     setLoading(true);
     setLoadingMessage("Curating beauty blueprint...");
     try {
@@ -137,6 +138,7 @@ const App: React.FC = () => {
     const isValid = await validateFaceWithUI(activePhoto);
     if (!isValid) return;
 
+    setTryOnImage(null);
     setLoading(true);
     setLoadingMessage("Searching your celebrity twin...");
     try {
@@ -182,6 +184,7 @@ const App: React.FC = () => {
       setLocalInspoFace(null); // Clear — means "using profile photo"
     }
     setInspoText(newInspoText);
+    setTryOnImage(null);
     setLoading(true);
     setLoadingMessage("Analyzing inspiration...");
     try {
