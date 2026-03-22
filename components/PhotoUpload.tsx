@@ -77,6 +77,7 @@ const PhotoUpload: React.FC<Props> = ({
                 type="button"
                 onClick={handleRemove}
                 className="absolute -top-3 -right-3 bg-red-500 text-white w-10 h-10 min-h-[44px] rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform active:scale-95 focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                aria-label="Remove uploaded photo"
               >
                 ✕
               </button>

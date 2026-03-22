@@ -45,7 +45,7 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, i
       
       <div className="flex items-center space-x-2">
         {/* Vanity Icon (Now first) - Changed to Mirror Icon */}
-        <button type="button" onClick={onInventory} className="relative p-2 text-gray-600 hover:text-pink-500 transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-xl" title="Digital Vanity">
+        <button type="button" onClick={onInventory} className="relative p-2 text-gray-600 hover:text-pink-500 transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-xl" aria-label="Digital Vanity">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="8" r="7"/>
             <polyline points="12 15 12 22"/>
@@ -55,7 +55,7 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, i
         </button>
 
         {/* Cart Icon (Now second) */}
-        <button type="button" onClick={onWishlist} className="relative p-2 text-gray-600 hover:text-pink-500 transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-xl" title="Cart">
+        <button type="button" onClick={onWishlist} className="relative p-2 text-gray-600 hover:text-pink-500 transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-xl" aria-label="Wishlist">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
           {wishlistCount > 0 && <span className="absolute top-0 right-0 bg-pink-400 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white">{wishlistCount}</span>}
         </button>
@@ -66,12 +66,17 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, i
           className="relative"
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
+          onFocus={() => setShowTooltip(true)}
+          onBlurCapture={(e) => {
+            // Only close if focus leaves the entire container (not moving between children)
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+              setShowTooltip(false);
+            }
+          }}
         >
           <button 
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            onFocus={() => setShowTooltip(true)}
-            onBlur={() => setShowTooltip(false)}
             className={`w-10 h-10 min-h-[44px] rounded-full overflow-hidden border-2 cursor-pointer transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 bg-transparent p-0 ${masterPhoto ? 'border-pink-500 scale-110 shadow-lg' : 'border-gray-200 hover:border-pink-300'}`}
             aria-label={masterPhoto ? 'Change profile photo' : 'Upload profile photo'}
           >
@@ -90,8 +95,8 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, i
               </ul>
               {masterPhoto ? (
                 <div className="space-y-2">
-                  <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full bg-pink-50 text-pink-600 py-2 rounded-xl text-xs font-bold uppercase min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2">Change Profile</button>
-                  <button type="button" onClick={() => onSetMasterPhoto(null)} className="w-full text-red-400 py-1 text-xs font-medium hover:text-red-600 transition-colors focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded">Remove Photo</button>
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full bg-pink-50 text-pink-600 py-2 rounded-xl text-xs font-bold uppercase min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2">Upload New Photo</button>
+                  <button type="button" onClick={() => onSetMasterPhoto(null)} className="w-full text-red-400 py-1 text-xs font-medium hover:text-red-600 transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded" aria-label="Remove profile photo">Remove Photo</button>
                 </div>
               ) : (
                 <p className="text-xs text-pink-600 font-bold">Upload to unlock faster features.</p>
