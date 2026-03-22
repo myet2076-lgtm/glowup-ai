@@ -41,6 +41,7 @@ const App: React.FC = () => {
   const [inspoText, setInspoText] = useState('');
   const [tryOnImage, setTryOnImage] = useState<string | null>(null);
   const [hairResultImage, setHairResultImage] = useState<string | null>(null);
+  const [inspoEntryHint, setInspoEntryHint] = useState<'upload' | 'selfie' | null>(null);
 
   useEffect(() => {
     let interval: any;
@@ -174,7 +175,12 @@ const App: React.FC = () => {
     newInspoText: string
   ) => {
     setInspoPhoto(newInspoPhoto);
-    setLocalInspoFace(facePhoto);
+    // Only set localInspoFace if it's a DIFFERENT photo than master
+    if (facePhoto !== masterFacePhoto) {
+      setLocalInspoFace(facePhoto);
+    } else {
+      setLocalInspoFace(null); // Clear — means "using profile photo"
+    }
     setInspoText(newInspoText);
     setLoading(true);
     setLoadingMessage("Analyzing inspiration...");
@@ -260,7 +266,7 @@ const App: React.FC = () => {
       
       <main className="flex-grow container mx-auto px-4 py-8 max-w-5xl">
         {loading && (
-          <div className="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-8 text-center space-y-6">
+          <div className="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-8 text-center space-y-6" role="status" aria-live="polite">
             <div className="w-64 bg-pink-50 h-3 rounded-full overflow-hidden border border-pink-100">
               <div className="h-full bg-pink-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
             </div>
@@ -272,7 +278,7 @@ const App: React.FC = () => {
           <Landing 
             onQuiz={() => setCurrentPage('quiz')} 
             onCelebrity={() => setCurrentPage('celebrity')} 
-            onInspiration={() => setCurrentPage('inspiration')}
+            onInspiration={(hint) => { setInspoEntryHint(hint ?? null); setCurrentPage('inspiration'); }}
             onInventory={() => setCurrentPage('inventory')}
             onFaceAnalysis={() => processFaceAnalysis()}
             onHairLab={() => setCurrentPage('hair-lab')}
@@ -352,6 +358,7 @@ const App: React.FC = () => {
             initialInspoPhoto={inspoPhoto}
             initialInspoText={inspoText}
             initialFace={localInspoFace}
+            entryHint={inspoEntryHint}
           />
         )}
 

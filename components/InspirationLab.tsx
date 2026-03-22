@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react';
-import PhotoUpload from './PhotoUpload';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface InspirationLabProps {
   masterFacePhoto: string | null;
@@ -11,6 +10,7 @@ interface InspirationLabProps {
   initialInspoPhoto?: string | null;
   initialInspoText?: string;
   initialFace?: string | null;
+  entryHint?: 'upload' | 'selfie' | null;
 }
 
 const InspirationLab: React.FC<InspirationLabProps> = ({
@@ -23,6 +23,7 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
   initialInspoPhoto,
   initialInspoText,
   initialFace,
+  entryHint,
 }) => {
   const [inspoPhoto, setInspoPhoto] = useState<string | null>(initialInspoPhoto ?? null);
   const [inspoText, setInspoText] = useState(initialInspoText ?? '');
@@ -32,6 +33,26 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
   const [validating, setValidating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const inspoFileRef = useRef<HTMLInputElement>(null);
+
+  // Entry hint: auto-open selfie upload if hint is 'selfie' and no master photo
+  useEffect(() => {
+    if (entryHint === 'selfie' && !masterFacePhoto) {
+      setShowUploadSelfie(true);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleInspoFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setInspoPhoto(reader.result as string);
+      setError(null);
+    };
+    reader.readAsDataURL(file);
+    if (inspoFileRef.current) inspoFileRef.current.value = '';
+  };
 
   const activeFace = localFace || masterFacePhoto;
   const hasInspo = !!inspoPhoto || inspoText.trim().length > 0;
@@ -118,15 +139,47 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
           <span className="serif text-xl text-pink-900">Your inspiration</span>
         </div>
         <div className="bg-white rounded-2xl border border-pink-50 shadow-sm p-6 sm:p-8 space-y-6">
-          <PhotoUpload
-            title="Inspo Image"
-            description="Upload the look you want to recreate. JPEG/PNG."
-            onUpload={(photo) => {
-              setInspoPhoto(photo);
-              setError(null);
-            }}
-            compact
+          {/* Inspo image upload — inline, no PhotoUpload component */}
+          <input
+            type="file"
+            ref={inspoFileRef}
+            accept="image/jpeg,image/png"
+            className="hidden"
+            onChange={handleInspoFileSelect}
           />
+          {inspoPhoto ? (
+            <div className="space-y-3">
+              <img
+                src={inspoPhoto}
+                alt="Your inspiration"
+                className="w-full max-h-[200px] object-cover rounded-2xl border border-pink-100"
+              />
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => inspoFileRef.current?.click()}
+                  className="text-xs text-pink-600 underline underline-offset-2 py-2 min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
+                >
+                  Change
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInspoPhoto(null)}
+                  className="text-xs text-gray-400 hover:text-red-500 underline underline-offset-2 py-2 min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => inspoFileRef.current?.click()}
+              className="w-full py-4 min-h-[44px] border-2 border-dashed border-pink-200 text-pink-500 rounded-2xl text-sm font-medium hover:bg-pink-50 transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+            >
+              Upload an inspiration image 📸
+            </button>
+          )}
 
           {/* "or describe it" divider */}
           <div className="flex items-center gap-4">
