@@ -1,10 +1,18 @@
 import OpenAI from 'openai';
 import { QuizAnswers, MakeupAnalysis, Product, FaceAnalysisResult } from './types';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+// Lazy init — avoid crashing the entire app if no API key is set yet
+let _openai: OpenAI | null = null;
+function getClient(): OpenAI {
+  if (!_openai) {
+    const key = process.env.OPENAI_API_KEY;
+    if (!key || key === 'PLACEHOLDER_API_KEY') {
+      throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY in your environment variables.');
+    }
+    _openai = new OpenAI({ apiKey: key, dangerouslyAllowBrowser: true });
+  }
+  return _openai;
+}
 
 // Helper: convert base64 string to File (browser-compatible, no Buffer)
 function base64ToFile(base64: string, filename: string, mimeType = 'image/jpeg'): File {
@@ -102,7 +110,7 @@ const FACE_ANALYSIS_SCHEMA = {
 // ── Service Functions ──
 
 export const validateFaceImage = async (base64Image: string): Promise<boolean> => {
-  const response = await openai.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       {
@@ -132,7 +140,7 @@ export const validateFaceImage = async (base64Image: string): Promise<boolean> =
 };
 
 export const normalizeProduct = async (brand: string, name: string): Promise<Product> => {
-  const response = await openai.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       { role: 'user', content: `Identify the exact official product Brand: ${brand}, Name: ${name}. Return JSON.` },
@@ -159,7 +167,7 @@ export const normalizeProduct = async (brand: string, name: string): Promise<Pro
 };
 
 export const getMakeupFromQuiz = async (answers: QuizAnswers): Promise<MakeupAnalysis> => {
-  const response = await openai.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       {
@@ -180,7 +188,7 @@ export const getMakeupFromQuiz = async (answers: QuizAnswers): Promise<MakeupAna
 };
 
 export const analyzeFaceFeatures = async (base64Image: string): Promise<FaceAnalysisResult> => {
-  const response = await openai.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       {
@@ -204,7 +212,7 @@ export const analyzeFaceFeatures = async (base64Image: string): Promise<FaceAnal
 };
 
 export const analyzeCelebrityLookAlike = async (base64Image: string): Promise<MakeupAnalysis> => {
-  const response = await openai.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       {
@@ -249,7 +257,7 @@ export const analyzeInspirationLook = async (
     text: `Analyze the inspo look: ${textDesc}. Adapt it to the user. For tutorials, strictly use YouTube search result URLs. If there is no celebrity match, use an empty string for celebrityMatch and celebrityImage.`,
   });
 
-  const response = await openai.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [{ role: 'user', content }],
     response_format: {
@@ -272,7 +280,7 @@ export const analyzeInventory = async (base64Images: string[]): Promise<Product[
   }
   content.push({ type: 'text', text: 'Identify makeup products in these images.' });
 
-  const response = await openai.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
     messages: [{ role: 'user', content }],
     response_format: {
@@ -300,7 +308,7 @@ export const analyzeInventory = async (base64Images: string[]): Promise<Product[
 
 export const generateTryOn = async (faceImage: string, lookDescription: string): Promise<string> => {
   const file = base64ToFile(faceImage, 'face.png', 'image/png');
-  const response = await openai.images.edit({
+  const response = await getClient().images.edit({
     model: 'gpt-image-1',
     image: file,
     prompt: `Apply this makeup style: ${lookDescription}. Keep the person's face exactly the same, just add the makeup. Photorealistic result.`,
@@ -313,7 +321,7 @@ export const generateTryOn = async (faceImage: string, lookDescription: string):
 
 export const generateHairTryOn = async (faceImage: string, style: string, color: string): Promise<string> => {
   const file = base64ToFile(faceImage, 'face.png', 'image/png');
-  const response = await openai.images.edit({
+  const response = await getClient().images.edit({
     model: 'gpt-image-1',
     image: file,
     prompt: `Give this person ${color} ${style} hair. Keep the person's face exactly the same, only change the hair. Photorealistic result.`,
