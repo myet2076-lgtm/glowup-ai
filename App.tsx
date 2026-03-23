@@ -11,7 +11,7 @@ import {
   normalizeProduct,
   generateHairTryOn,
   validateFaceImage
-} from './geminiService';
+} from './openaiService';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Landing from './components/Landing';
