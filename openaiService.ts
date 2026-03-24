@@ -110,33 +110,38 @@ const FACE_ANALYSIS_SCHEMA = {
 // ── Service Functions ──
 
 export const validateFaceImage = async (base64Image: string): Promise<boolean> => {
-  const response = await getClient().chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      {
-        role: 'user',
-        content: [
-          { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Image}` } },
-          { type: 'text', text: "Does this image contain a clear human face suitable for makeup analysis? Return JSON: { \"isFace\": boolean }." },
-        ],
-      },
-    ],
-    response_format: {
-      type: 'json_schema',
-      json_schema: {
-        name: 'face_validation',
-        strict: true,
-        schema: {
-          type: 'object',
-          properties: { isFace: { type: 'boolean' } },
-          required: ['isFace'],
-          additionalProperties: false,
+  try {
+    const response = await getClient().chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Image}` } },
+            { type: 'text', text: "Does this image contain a clear human face suitable for makeup analysis? Return JSON: { \"isFace\": boolean }." },
+          ],
+        },
+      ],
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'face_validation',
+          strict: true,
+          schema: {
+            type: 'object',
+            properties: { isFace: { type: 'boolean' } },
+            required: ['isFace'],
+            additionalProperties: false,
+          },
         },
       },
-    },
-  });
-  const data = JSON.parse(response.choices[0].message.content || '{"isFace": false}');
-  return data.isFace;
+    });
+    const data = JSON.parse(response.choices[0].message.content || '{"isFace": true}');
+    return data.isFace;
+  } catch {
+    // API not configured or failed — don't block the user, let them through
+    return true;
+  }
 };
 
 export const normalizeProduct = async (brand: string, name: string): Promise<Product> => {
