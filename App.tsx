@@ -255,7 +255,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fffafb]">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header 
         onHome={handleRestart} 
         onInventory={() => setCurrentPage('inventory')}
@@ -268,13 +268,13 @@ const App: React.FC = () => {
         validateFace={validateFace}
       />
       
-      <main className="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+      <main className="flex-grow">
         {loading && (
           <div className="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-8 text-center space-y-6" role="status" aria-live="polite">
-            <div className="w-64 bg-pink-50 h-3 rounded-full overflow-hidden border border-pink-100">
-              <div className="h-full bg-pink-500 transition-all duration-300" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="Analysis progress" style={{ width: `${progress}%` }}></div>
+            <div className="w-64 bg-surface-container-low h-3 overflow-hidden" style={{ borderRadius: '0.25rem' }}>
+              <div className="h-full bg-primary transition-all duration-300" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="Analysis progress" style={{ width: `${progress}%` }}></div>
             </div>
-            <p className="text-pink-600 font-bold text-xl italic serif">{loadingMessage}</p>
+            <p className="text-neutral-900 font-serif text-xl italic">{loadingMessage}</p>
           </div>
         )}
 

@@ -30,7 +30,7 @@ const Quiz: React.FC<Props> = ({ onSubmit, onBack }) => {
   const currentQuestion = questions[step];
 
   return (
-    <div className="max-w-xl mx-auto py-12 space-y-8 animate-in slide-in-from-bottom-8">
+    <div className="max-w-xl mx-auto py-12 pt-32 space-y-8 animate-in slide-in-from-bottom-8 px-4">
       <button onClick={onBack} className="text-gray-500 hover:text-pink-600 font-medium flex items-center">← Back</button>
 
       <div className="space-y-6">

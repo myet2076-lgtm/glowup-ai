@@ -10,7 +10,7 @@ interface Props {
 
 const FaceAnalysisView: React.FC<Props> = ({ result, userPhoto, onBack }) => {
   return (
-    <div className="space-y-12 py-8 animate-in fade-in">
+    <div className="space-y-12 py-8 pt-32 animate-in fade-in max-w-5xl mx-auto px-4">
       <div className="flex items-center justify-between">
         <button onClick={onBack} className="text-pink-600 font-bold">← Back</button>
         <h2 className="serif text-4xl text-pink-900">Face Blueprint</h2>

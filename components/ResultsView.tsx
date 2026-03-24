@@ -50,24 +50,24 @@ const ResultsView: React.FC<Props> = ({
   const showExplore = onFaceAnalysis && onCelebrity && onHairLab;
 
   return (
-    <div className="motion-safe:animate-fade-in-up max-w-2xl mx-auto px-4 py-8 space-y-12">
+    <div className="motion-safe:animate-fade-in-up max-w-2xl mx-auto px-4 py-8 space-y-12 pt-32">
       {/* ── Header (sticky, editorial) ── */}
-      <header className="sticky top-[80px] z-30 bg-[#fffafb]/80 backdrop-blur-md py-4 -mx-4 px-4 border-b border-pink-50">
+      <header className="sticky top-[96px] z-30 bg-white/80 backdrop-blur-md py-4 -mx-4 px-4 border-b border-neutral-50">
         <div className="flex items-center justify-between">
           <button
             type="button"
             onClick={onBack}
-            className="min-h-[44px] px-3 text-sm font-medium text-pink-600 hover:text-pink-700 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
+            className="min-h-[44px] px-3 text-xs font-label uppercase tracking-[0.2em] text-neutral-500 hover:text-neutral-800 active:scale-[0.97] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
           >
             &larr; Back
           </button>
 
           <div className="text-center flex-1 min-w-0">
-            <h1 className="serif text-3xl sm:text-4xl text-pink-900 tracking-[-0.02em] truncate">
+            <h1 className="font-serif text-3xl sm:text-4xl text-neutral-900 tracking-tight truncate">
               {analysis.styleName}
             </h1>
             {isCelebrityTwin && analysis.celebrityMatch && (
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-[10px] text-secondary uppercase tracking-[0.2em] mt-1">
                 Your twin: {analysis.celebrityMatch}
               </p>
             )}
@@ -76,7 +76,7 @@ const ResultsView: React.FC<Props> = ({
           <button
             type="button"
             onClick={onRestart}
-            className="min-h-[44px] px-3 text-sm font-medium text-gray-500 hover:text-pink-600 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
+            className="min-h-[44px] px-3 text-xs font-label uppercase tracking-[0.2em] text-neutral-500 hover:text-neutral-800 active:scale-[0.97] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
           >
             Restart
           </button>
@@ -86,7 +86,7 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Style Overview ── */}
       <section className="space-y-6">
         <h2 className="sr-only">Style Overview</h2>
-        <p className="font-light text-gray-600 text-base leading-relaxed">
+        <p className="text-secondary text-lg leading-relaxed font-sans">
           {analysis.description}
         </p>
         {analysis.colorPalette.length > 0 && (
@@ -94,10 +94,10 @@ const ResultsView: React.FC<Props> = ({
             {analysis.colorPalette.map((color, i) => (
               <div key={i} className="flex flex-col items-center gap-1.5">
                 <div
-                  className="w-10 h-10 rounded-full border border-white shadow-sm"
+                  className="w-10 h-10 rounded-full editorial-shadow"
                   style={{ backgroundColor: color }}
                 />
-                <span className="text-xs text-gray-500">{color}</span>
+                <span className="text-[10px] text-secondary uppercase tracking-widest">{color}</span>
               </div>
             ))}
           </div>
@@ -107,38 +107,22 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Photo Comparison ── */}
       <section className="space-y-3">
         <h2 className="sr-only">Photo Comparison</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl overflow-hidden">
-          <div className="relative aspect-[3/4] bg-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-hidden" style={{ borderRadius: '0.25rem' }}>
+          <div className="relative aspect-[3/4] bg-surface-container-high">
             {userPhoto ? (
-              <img
-                src={userPhoto}
-                className="w-full h-full object-cover"
-                alt="Your photo"
-              />
+              <img src={userPhoto} className="w-full h-full object-cover" alt="Your photo" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                Your Photo
-              </div>
+              <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm">Your Photo</div>
             )}
-            <span className="absolute top-3 left-3 text-xs text-gray-600 uppercase bg-white/80 backdrop-blur-sm px-2 py-1 rounded">
-              You
-            </span>
+            <span className="absolute top-3 left-3 text-[10px] text-neutral-900 uppercase tracking-[0.2em] bg-white/80 backdrop-blur-sm px-2 py-1" style={{ borderRadius: '0.125rem' }}>You</span>
           </div>
-          <div className="relative aspect-[3/4] bg-pink-50">
+          <div className="relative aspect-[3/4] bg-surface-container-low">
             {tryOnImage || inspoPhoto ? (
-              <img
-                src={tryOnImage || inspoPhoto || ''}
-                className="w-full h-full object-cover"
-                alt={tryOnImage ? 'AI try-on result' : 'Inspiration'}
-              />
+              <img src={tryOnImage || inspoPhoto || ''} className="w-full h-full object-cover" alt={tryOnImage ? 'AI try-on result' : 'Inspiration'} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm px-4 text-center">
-                Try on to preview
-              </div>
+              <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm px-4 text-center">Try on to preview</div>
             )}
-            <span className="absolute top-3 left-3 text-xs text-gray-600 uppercase bg-white/80 backdrop-blur-sm px-2 py-1 rounded">
-              {tryOnImage ? 'Try-On' : 'Inspiration'}
-            </span>
+            <span className="absolute top-3 left-3 text-[10px] text-neutral-900 uppercase tracking-[0.2em] bg-white/80 backdrop-blur-sm px-2 py-1" style={{ borderRadius: '0.125rem' }}>{tryOnImage ? 'Try-On' : 'Inspiration'}</span>
           </div>
         </div>
       </section>
@@ -149,7 +133,7 @@ const ResultsView: React.FC<Props> = ({
           <button
             type="button"
             onClick={onTryOn}
-            className="flex-1 bg-pink-600 hover:bg-pink-700 active:scale-[0.97] text-white px-8 py-4 min-h-[44px] rounded-full font-bold uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-pink-300/50 transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+            className="flex-1 bg-primary hover:opacity-90 active:scale-[0.97] text-white px-8 py-5 min-h-[44px] rounded-none font-label uppercase tracking-[0.2em] text-xs shadow-xl shadow-primary/10 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             Try This Look
           </button>
@@ -158,7 +142,8 @@ const ResultsView: React.FC<Props> = ({
           <button
             type="button"
             onClick={handleDownload}
-            className="min-h-[44px] px-6 py-3 bg-white border border-pink-100 rounded-full text-sm font-medium text-pink-600 hover:bg-pink-50 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+            className="min-h-[44px] px-6 py-3 bg-surface-container-high hover:bg-neutral-200 text-neutral-900 text-xs font-label uppercase tracking-[0.2em] active:scale-[0.97] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            style={{ borderRadius: '0.25rem' }}
           >
             Download
           </button>
@@ -168,23 +153,17 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Tutorial Steps ── */}
       {analysis.tutorialSteps.length > 0 && (
         <section className="space-y-6">
-          <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
-            Step-by-Step Tutorial
-          </h2>
+          <h2 className="font-serif text-2xl text-neutral-900 tracking-tight">Step-by-Step Tutorial</h2>
           <div className="space-y-8">
             {analysis.tutorialSteps.map((step, idx) => (
               <div key={idx} className="flex gap-4">
-                <span className="serif text-2xl text-pink-300 font-light flex-shrink-0 w-8 text-right">
+                <span className="font-serif text-2xl text-neutral-200 font-light flex-shrink-0 w-8 text-right">
                   {idx + 1}
                 </span>
                 <div className="space-y-2 flex-1">
-                  <h3 className="text-sm font-bold text-gray-800">{step.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {step.instruction}
-                  </p>
-                  {step.proTip && (
-                    <p className="text-sm italic text-gray-500">{step.proTip}</p>
-                  )}
+                  <h3 className="text-sm font-bold text-neutral-900">{step.title}</h3>
+                  <p className="text-sm text-secondary leading-relaxed">{step.instruction}</p>
+                  {step.proTip && <p className="text-sm italic text-secondary">{step.proTip}</p>}
                 </div>
               </div>
             ))}
@@ -195,41 +174,27 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Product Recommendations ── */}
       {analysis.recommendedProducts.length > 0 && (
         <section className="space-y-6">
-          <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
-            Recommended Products
-          </h2>
+          <h2 className="font-serif text-2xl text-neutral-900 tracking-tight">Recommended Products</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {analysis.recommendedProducts.map((product, i) => {
               const match = getInventoryMatch(product.name);
               return (
-                <div
-                  key={i}
-                  className="bg-white rounded-2xl border border-pink-50 p-6 flex flex-col justify-between"
-                >
+                <div key={i} className="bg-white editorial-shadow p-6 flex flex-col justify-between" style={{ borderRadius: '0.25rem' }}>
                   <div className="mb-4">
                     {product.brand && (
-                      <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">
-                        {product.brand}
-                      </p>
+                      <p className="text-[10px] text-secondary uppercase tracking-[0.2em] mb-1">{product.brand}</p>
                     )}
-                    <h3 className="text-sm font-bold text-gray-800">
-                      {product.name}
-                    </h3>
-                    {product.category && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        {product.category}
-                      </p>
-                    )}
+                    <h3 className="text-sm font-bold text-neutral-900">{product.name}</h3>
+                    {product.category && <p className="text-xs text-secondary mt-1">{product.category}</p>}
                   </div>
                   {match ? (
-                    <p className="text-sm font-medium text-green-600">
-                      In Your Collection ✓
-                    </p>
+                    <p className="text-sm font-medium text-green-600">In Your Collection ✓</p>
                   ) : (
                     <button
                       type="button"
                       onClick={() => onAddToWishlist(product)}
-                      className="w-full min-h-[44px] py-3 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl text-sm font-medium active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                      className="w-full min-h-[44px] py-3 bg-surface-container-low hover:bg-surface-container-high text-neutral-900 text-xs font-label uppercase tracking-[0.2em] active:scale-[0.97] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      style={{ borderRadius: '0.25rem' }}
                     >
                       Add to Wishlist
                     </button>
@@ -244,9 +209,7 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Tutorial Links ── */}
       {(analysis.tutorialLinks.length > 0 || analysis.tikTokSearchQuery) && (
         <section className="space-y-6">
-          <h2 className="serif text-2xl text-pink-900 tracking-[-0.02em]">
-            Learn More
-          </h2>
+          <h2 className="font-serif text-2xl text-neutral-900 tracking-tight">Learn More</h2>
           <div className="grid gap-3">
             {analysis.tutorialLinks.map((link, i) => (
               <a
@@ -254,19 +217,14 @@ const ResultsView: React.FC<Props> = ({
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between bg-white rounded-2xl border border-pink-50 p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all group focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-2xl"
+                className="flex items-center justify-between bg-white editorial-shadow p-5 hover:-translate-y-0.5 transition-all duration-300 group focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                style={{ borderRadius: '0.25rem' }}
               >
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">
-                    {link.platform}
-                  </p>
-                  <p className="text-sm font-medium text-gray-800 mt-0.5">
-                    {link.title}
-                  </p>
+                  <p className="text-[10px] text-secondary uppercase tracking-[0.2em]">{link.platform}</p>
+                  <p className="text-sm font-medium text-neutral-900 mt-0.5">{link.title}</p>
                 </div>
-                <span className="text-pink-400 group-hover:text-pink-600 transition-colors text-lg">
-                  &rarr;
-                </span>
+                <span className="text-neutral-300 group-hover:text-primary transition-colors duration-300 text-lg">&rarr;</span>
               </a>
             ))}
             {analysis.tikTokSearchQuery && (
@@ -274,19 +232,14 @@ const ResultsView: React.FC<Props> = ({
                 href={`https://www.tiktok.com/search?q=${encodeURIComponent(analysis.tikTokSearchQuery)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between bg-white rounded-2xl border border-pink-50 p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all group focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-2xl"
+                className="flex items-center justify-between bg-white editorial-shadow p-5 hover:-translate-y-0.5 transition-all duration-300 group focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                style={{ borderRadius: '0.25rem' }}
               >
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">
-                    TikTok
-                  </p>
-                  <p className="text-sm font-medium text-gray-800 mt-0.5">
-                    {analysis.tikTokSearchQuery}
-                  </p>
+                  <p className="text-[10px] text-secondary uppercase tracking-[0.2em]">TikTok</p>
+                  <p className="text-sm font-medium text-neutral-900 mt-0.5">{analysis.tikTokSearchQuery}</p>
                 </div>
-                <span className="text-pink-400 group-hover:text-pink-600 transition-colors text-lg">
-                  &rarr;
-                </span>
+                <span className="text-neutral-300 group-hover:text-primary transition-colors duration-300 text-lg">&rarr;</span>
               </a>
             )}
           </div>
@@ -297,48 +250,37 @@ const ResultsView: React.FC<Props> = ({
       {showExplore && (
         <section className="space-y-6">
           <div className="flex items-center gap-4">
-            <div className="h-px bg-pink-200 flex-1" />
-            <span className="text-xs text-gray-500 uppercase tracking-widest font-medium">
-              Discover More
-            </span>
-            <div className="h-px bg-pink-200 flex-1" />
+            <div className="h-px bg-neutral-100 flex-1" />
+            <span className="text-[10px] text-secondary uppercase tracking-[0.2em] font-medium">Discover More</span>
+            <div className="h-px bg-neutral-100 flex-1" />
           </div>
           <div className="grid gap-3">
             <button
               type="button"
               onClick={onFaceAnalysis}
-              className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-white/60 backdrop-blur-sm border border-pink-100 rounded-2xl hover:bg-white/80 hover:border-pink-200 hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+              className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-surface-container-low hover:bg-surface-container-high hover:-translate-y-0.5 active:scale-[0.97] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              style={{ borderRadius: '0.25rem' }}
             >
-              <span className="text-sm font-medium text-gray-600 group-hover:text-pink-600 tracking-wide">
-                Analyse your features
-              </span>
-              <span className="text-sm text-pink-400 group-hover:text-pink-600 transition-colors">
-                &rarr;
-              </span>
+              <span className="text-sm font-medium text-secondary group-hover:text-neutral-900 tracking-wide transition-colors duration-300">Analyse your features</span>
+              <span className="text-sm text-neutral-300 group-hover:text-primary transition-colors duration-300">&rarr;</span>
             </button>
             <button
               type="button"
               onClick={onCelebrity}
-              className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-white/60 backdrop-blur-sm border border-pink-100 rounded-2xl hover:bg-white/80 hover:border-pink-200 hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+              className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-surface-container-low hover:bg-surface-container-high hover:-translate-y-0.5 active:scale-[0.97] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              style={{ borderRadius: '0.25rem' }}
             >
-              <span className="text-sm font-medium text-gray-600 group-hover:text-pink-600 tracking-wide">
-                Find your celebrity twin
-              </span>
-              <span className="text-sm text-pink-400 group-hover:text-pink-600 transition-colors">
-                &rarr;
-              </span>
+              <span className="text-sm font-medium text-secondary group-hover:text-neutral-900 tracking-wide transition-colors duration-300">Find your celebrity twin</span>
+              <span className="text-sm text-neutral-300 group-hover:text-primary transition-colors duration-300">&rarr;</span>
             </button>
             <button
               type="button"
               onClick={onHairLab}
-              className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-white/60 backdrop-blur-sm border border-pink-100 rounded-2xl hover:bg-white/80 hover:border-pink-200 hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+              className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-surface-container-low hover:bg-surface-container-high hover:-translate-y-0.5 active:scale-[0.97] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              style={{ borderRadius: '0.25rem' }}
             >
-              <span className="text-sm font-medium text-gray-600 group-hover:text-pink-600 tracking-wide">
-                Try a new hairstyle
-              </span>
-              <span className="text-sm text-pink-400 group-hover:text-pink-600 transition-colors">
-                &rarr;
-              </span>
+              <span className="text-sm font-medium text-secondary group-hover:text-neutral-900 tracking-wide transition-colors duration-300">Try a new hairstyle</span>
+              <span className="text-sm text-neutral-300 group-hover:text-primary transition-colors duration-300">&rarr;</span>
             </button>
           </div>
         </section>

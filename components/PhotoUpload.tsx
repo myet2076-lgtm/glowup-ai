@@ -8,17 +8,17 @@ interface Props {
   compact?: boolean;
   useProfileOption?: boolean;
   onUseProfile?: () => void;
-  onSetAsMaster?: (photo: string) => void; // New prop to set global PFP
+  onSetAsMaster?: (photo: string) => void;
   isMasterSet?: boolean;
 }
 
-const PhotoUpload: React.FC<Props> = ({ 
-  title, 
-  description, 
-  onUpload, 
-  onBack, 
-  compact, 
-  useProfileOption, 
+const PhotoUpload: React.FC<Props> = ({
+  title,
+  description,
+  onUpload,
+  onBack,
+  compact,
+  useProfileOption,
   onUseProfile,
   onSetAsMaster,
   isMasterSet
@@ -65,18 +65,22 @@ const PhotoUpload: React.FC<Props> = ({
   };
 
   return (
-    <div className={`${compact ? '' : 'max-w-xl mx-auto py-12'} space-y-4 animate-in fade-in`}>
-      {onBack && <button type="button" onClick={onBack} className="text-gray-600 hover:text-pink-500 flex items-center text-sm transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded">← Back</button>}
+    <div className={`${compact ? '' : 'max-w-xl mx-auto py-12 pt-32'} space-y-4 animate-in fade-in`}>
+      {onBack && (
+        <button type="button" onClick={onBack} className="text-neutral-500 hover:text-neutral-800 flex items-center text-sm transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded">
+          ← Back
+        </button>
+      )}
 
-      <div className={`relative p-8 rounded-[40px] border-2 border-dashed ${preview ? 'border-pink-400 bg-pink-50/30' : 'border-pink-100 bg-white'} transition-all text-center`}>
+      <div className={`relative p-8 border-2 border-dashed ${preview ? 'border-primary bg-secondary-container' : 'border-neutral-200 bg-white'} transition-all duration-300 text-center editorial-shadow`} style={{ borderRadius: '0.25rem' }}>
         {preview ? (
           <div className="space-y-6">
             <div className="relative group max-w-sm mx-auto">
-              <img src={preview} alt="Uploaded photo preview" className="w-full rounded-3xl shadow-2xl object-cover h-[350px] border-4 border-white transition-transform hover:scale-[1.01]" />
-              <button 
+              <img src={preview} alt="Uploaded photo preview" className="w-full object-cover h-[350px] editorial-shadow" style={{ borderRadius: '0.25rem' }} />
+              <button
                 type="button"
                 onClick={handleRemove}
-                className="absolute -top-3 -right-3 bg-red-500 text-white w-10 h-10 min-h-[44px] rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform active:scale-95 focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                className="absolute -top-3 -right-3 bg-red-500 text-white w-10 h-10 min-h-[44px] rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300 active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 aria-label="Remove uploaded photo"
               >
                 ✕
@@ -84,21 +88,23 @@ const PhotoUpload: React.FC<Props> = ({
 
               {showPfpPrompt && !isMasterSet && (
                 <div className="absolute inset-x-4 bottom-4 animate-in slide-in-from-bottom-4">
-                  <div className="bg-white/95 backdrop-blur p-4 rounded-2xl shadow-xl border border-pink-100 space-y-2">
-                    <p className="text-xs font-black text-pink-600 uppercase tracking-widest">Set as your profile photo?</p>
-                    <p className="text-xs text-gray-600 leading-tight">Save time! We'll use this for analysis, hair lab, and twin scan automatically.</p>
+                  <div className="bg-white/95 backdrop-blur p-4 editorial-shadow space-y-2" style={{ borderRadius: '0.25rem' }}>
+                    <p className="text-[10px] font-bold text-neutral-900 uppercase tracking-[0.2em]">Set as your profile photo?</p>
+                    <p className="text-xs text-secondary leading-tight">Save time! We'll use this for analysis, hair lab, and twin scan automatically.</p>
                     <div className="flex gap-2 pt-1">
-                      <button 
+                      <button
                         type="button"
                         onClick={handleSetPfp}
-                        className="flex-grow bg-pink-500 text-white py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-pink-600 transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                        className="flex-grow bg-primary text-white py-2 text-xs font-label uppercase tracking-[0.2em] hover:opacity-90 transition-all duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        style={{ borderRadius: '0.25rem' }}
                       >
                         Yes, Set as PFP
                       </button>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setShowPfpPrompt(false)}
-                        className="bg-white border border-pink-100 text-gray-600 px-4 py-2 rounded-xl text-xs font-bold uppercase hover:bg-gray-50 transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                        className="bg-surface-container-high text-neutral-900 px-4 py-2 text-xs font-label uppercase tracking-[0.2em] hover:bg-neutral-200 transition-all duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        style={{ borderRadius: '0.25rem' }}
                       >
                         No
                       </button>
@@ -109,10 +115,10 @@ const PhotoUpload: React.FC<Props> = ({
             </div>
 
             {!compact && (
-              <button 
+              <button
                 type="button"
                 onClick={() => onUpload(preview)}
-                className="bg-pink-500 text-white px-10 py-4 rounded-full font-bold shadow-lg hover:bg-pink-600 hover:-translate-y-1 transition-all active:scale-95 text-sm uppercase tracking-widest min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                className="bg-primary text-white px-10 py-5 rounded-none font-label uppercase tracking-[0.2em] text-xs hover:opacity-90 transition-all duration-300 shadow-xl shadow-primary/10 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Analyze Now
               </button>
@@ -120,28 +126,29 @@ const PhotoUpload: React.FC<Props> = ({
           </div>
         ) : (
           <div className="space-y-6 py-12">
-            <div 
+            <div
               role="button"
               tabIndex={0}
               onClick={() => fileInputRef.current?.click()}
               onKeyDown={handleUploadAreaKeyDown}
-              className="cursor-pointer space-y-4 group focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded-3xl outline-none"
+              className="cursor-pointer space-y-4 group focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded outline-none"
             >
-              <div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center text-4xl mx-auto text-pink-500 group-hover:scale-110 transition-transform">📷</div>
+              <div className="w-20 h-20 bg-surface-container-high rounded-full flex items-center justify-center text-4xl mx-auto text-neutral-400 group-hover:scale-110 transition-transform duration-300">📷</div>
               <div>
-                <h3 className="serif text-2xl text-pink-900 font-bold">{title}</h3>
-                <p className="text-gray-600 text-xs mt-2 max-w-xs mx-auto leading-relaxed">{description}</p>
-                <p className="text-xs text-pink-600 mt-1 uppercase font-bold tracking-widest">Accepts: JPEG, PNG</p>
+                <h3 className="font-serif text-2xl text-neutral-900">{title}</h3>
+                <p className="text-secondary text-xs mt-2 max-w-xs mx-auto leading-relaxed">{description}</p>
+                <p className="text-[10px] text-secondary mt-1 uppercase font-label tracking-[0.2em]">Accepts: JPEG, PNG</p>
               </div>
             </div>
 
             {useProfileOption && onUseProfile && (
-              <div className="pt-6 border-t border-pink-50">
-                <p className="text-xs text-gray-600 uppercase tracking-widest mb-3">Or use existing profile</p>
-                <button 
+              <div className="pt-6 border-t border-neutral-100">
+                <p className="text-[10px] text-secondary uppercase tracking-[0.2em] mb-3">Or use existing profile</p>
+                <button
                   type="button"
                   onClick={onUseProfile}
-                  className="bg-white border-2 border-pink-200 text-pink-500 px-8 py-3 rounded-full font-bold text-xs hover:bg-pink-50 hover:border-pink-300 transition-all shadow-sm active:scale-95 min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+                  className="bg-surface-container-high text-neutral-900 px-8 py-3 font-label text-xs uppercase tracking-[0.2em] hover:bg-neutral-200 transition-all duration-300 editorial-shadow active:scale-95 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  style={{ borderRadius: '0.25rem' }}
                 >
                   Use Profile Photo
                 </button>

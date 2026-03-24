@@ -2,34 +2,48 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-white border-t border-pink-50 py-12 px-6">
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 text-center md:text-left">
-        <div className="space-y-2">
-          <div className="serif text-2xl font-bold text-pink-600">GlowUp AI</div>
-          <p className="text-gray-500 text-sm max-w-xs">Your personal, pocket-sized professional makeup artist powered by advanced AI.</p>
+    <footer className="bg-white border-t border-neutral-100">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-16 w-full max-w-screen-2xl mx-auto py-24 px-8">
+        <div className="space-y-6">
+          <div className="text-2xl font-serif text-neutral-900 italic">GlowUp AI</div>
+          <p className="text-neutral-500 max-w-xs text-xs leading-relaxed uppercase tracking-widest">Redefining beauty standards through the lens of personalized artificial intelligence.</p>
         </div>
-        
-        <div className="flex space-x-12">
-          <div className="space-y-3">
-            <h4 className="font-bold text-gray-800 text-sm uppercase tracking-widest">Community</h4>
-            <ul className="text-gray-600 text-sm space-y-2">
-              <li><span className="text-gray-600">Instagram</span></li>
-              <li><span className="text-gray-600">TikTok</span></li>
-              <li><span className="text-gray-600">Pinterest</span></li>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 w-full md:w-auto">
+          <div className="space-y-6">
+            <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-neutral-900 font-bold">Company</h5>
+            <ul className="space-y-3">
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">About</span></li>
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Careers</span></li>
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Science</span></li>
             </ul>
           </div>
-          <div className="space-y-3">
-            <h4 className="font-bold text-gray-800 text-sm uppercase tracking-widest">Legal</h4>
-            <ul className="text-gray-600 text-sm space-y-2">
-              <li><span className="text-gray-600">Privacy</span></li>
-              <li><span className="text-gray-600">Safety</span></li>
-              <li><span className="text-gray-600">Terms</span></li>
+          <div className="space-y-6">
+            <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-neutral-900 font-bold">Legal</h5>
+            <ul className="space-y-3">
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Privacy</span></li>
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Terms</span></li>
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Editorial</span></li>
+            </ul>
+          </div>
+          <div className="space-y-6">
+            <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-neutral-900 font-bold">Support</h5>
+            <ul className="space-y-3">
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Contact</span></li>
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">FAQ</span></li>
+            </ul>
+          </div>
+          <div className="space-y-6">
+            <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-neutral-900 font-bold">Social</h5>
+            <ul className="space-y-3">
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Instagram</span></li>
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">TikTok</span></li>
+              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Pinterest</span></li>
             </ul>
           </div>
         </div>
       </div>
-      <div className="mt-12 text-center text-gray-500 text-xs">
-        &copy; {new Date().getFullYear()} GlowUp AI. Built for beauty lovers everywhere.
+      <div className="max-w-screen-2xl mx-auto px-8 pb-12 flex justify-between items-center border-t border-neutral-50 pt-12">
+        <p className="text-neutral-400 text-[10px] uppercase tracking-widest">&copy; {new Date().getFullYear()} GlowUp AI. All rights reserved.</p>
       </div>
     </footer>
   );

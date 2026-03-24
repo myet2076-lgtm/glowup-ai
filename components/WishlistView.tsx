@@ -11,7 +11,7 @@ interface Props {
 
 const WishlistView: React.FC<Props> = ({ wishlist, onRemove, onBack, onRestart }) => {
   return (
-    <div className="space-y-8 py-8 animate-in slide-in-from-bottom-8">
+    <div className="space-y-8 py-8 pt-32 animate-in slide-in-from-bottom-8 max-w-5xl mx-auto px-4">
       <div className="flex items-center justify-between">
         <button onClick={onBack} className="text-pink-600 font-bold">← Back</button>
         <h2 className="serif text-4xl text-pink-900">Your Cart</h2>

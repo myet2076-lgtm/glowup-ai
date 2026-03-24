@@ -10,157 +10,146 @@ interface Props {
 }
 
 interface FeatureCard {
-  icon: string;
   title: string;
-  desc: string;
-  cta: string;
+  label: string;
   onClick: () => void;
-  primary?: boolean;
 }
 
 const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAnalysis, onHairLab }) => {
-  const cards: FeatureCard[] = [
-    {
-      icon: '📸',
-      title: 'Recreate Any Look',
-      desc: 'Upload a photo of any makeup style or describe the look you want. We\u2019ll analyze it, adapt it to your features, and give you a step-by-step tutorial.',
-      cta: 'Upload Inspiration',
-      onClick: () => onInspiration('upload'),
-      primary: true,
-    },
-    {
-      icon: '\u{1F441}\uFE0F',
-      title: 'Know Your Features',
-      desc: 'Get a detailed analysis of your face shape, skin undertone, and best colors for makeup, clothing, and accessories.',
-      cta: 'Analyze My Face',
-      onClick: onFaceAnalysis,
-    },
-    {
-      icon: '⭐',
-      title: 'Find Your Celebrity Twin',
-      desc: 'Upload a selfie and discover which celebrity you resemble most \u2014 plus get their signature makeup secrets adapted for you.',
-      cta: 'Find My Twin',
-      onClick: onCelebrity,
-    },
-    {
-      icon: '💇',
-      title: 'Try New Hairstyles',
-      desc: 'Preview how you\u2019d look with different hair colors and styles before committing. Zero risk, instant results.',
-      cta: 'Open Hair Lab',
-      onClick: onHairLab,
-    },
-    {
-      icon: '✨',
-      title: 'Discover Your Style',
-      desc: 'Not sure what look suits you? Take a quick quiz about your preferences and we\u2019ll create a personalized beauty blueprint.',
-      cta: 'Take the Quiz',
-      onClick: onQuiz,
-    },
+  const features: FeatureCard[] = [
+    { title: 'Inspiration Lab', label: 'Upload & Recreate', onClick: () => onInspiration('upload') },
+    { title: 'Face Analysis', label: 'Know Your Features', onClick: onFaceAnalysis },
+    { title: 'Celebrity Twin', label: 'Find Your Match', onClick: onCelebrity },
+    { title: 'Hair Lab', label: 'Try New Styles', onClick: onHairLab },
+    { title: 'Style Quiz', label: 'Discover Your Look', onClick: onQuiz },
   ];
 
   return (
-    <div className="motion-safe:animate-fade-in-up">
-      {/* Hero — compact */}
-      <div className="relative max-w-xl mx-auto text-center px-6 sm:px-0 py-8 sm:py-12">
-        <div
-          className="pointer-events-none absolute inset-0 -top-24 -bottom-24"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(244,114,182,0.06) 0%, transparent 70%)' }}
-          aria-hidden="true"
-        />
-
-        <p className="relative text-pink-600 uppercase tracking-[0.3em] text-xs font-medium mb-8">GlowUp AI</p>
-
-        <h1 className="relative serif text-5xl sm:text-6xl md:text-7xl text-pink-900 leading-[1.08] tracking-[-0.02em]">
-          Upload a look you love.<br />
-          <span className="italic text-rose-600">We&rsquo;ll make it yours.</span>
-        </h1>
-
-        <div className="mx-auto mt-10 mb-8 h-px w-12 bg-pink-200" />
-
-        <p className="relative font-light text-gray-600 text-base sm:text-lg leading-relaxed max-w-sm mx-auto">
-          Snap or upload any inspiration photo and get a personalised beauty breakdown in seconds.
-        </p>
-
-        <div className="relative mt-12 flex flex-col items-center gap-4">
-          <button
-            type="button"
-            onClick={() => onInspiration('upload')}
-            className="bg-pink-600 hover:bg-pink-700 active:scale-[0.97] text-white px-12 py-4 min-h-[44px] rounded-full font-bold uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-pink-300/50 transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
-          >
-            Get Started &mdash; Upload Inspiration
-          </button>
-          <button
-            type="button"
-            onClick={() => onInspiration('selfie')}
-            className="text-sm text-pink-600 hover:text-pink-700 underline underline-offset-4 decoration-pink-300 hover:decoration-pink-500 transition-all py-3 min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
-          >
-            or take a selfie &rarr;
-          </button>
-        </div>
-      </div>
-
-      {/* How It Works */}
-      <div className="max-w-2xl mx-auto px-6 sm:px-0 py-10">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            <span className="text-pink-500 font-semibold">&oplus;</span>
-            <span>Upload a look you love</span>
-          </div>
-          <span className="hidden sm:inline text-pink-300">&rarr;</span>
-          <div className="flex items-center gap-2">
-            <span className="text-pink-500 font-semibold">&oplus;</span>
-            <span>AI adapts it to your face</span>
-          </div>
-          <span className="hidden sm:inline text-pink-300">&rarr;</span>
-          <div className="flex items-center gap-2">
-            <span className="text-pink-500 font-semibold">&oplus;</span>
-            <span>Get your personalized tutorial</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Feature Cards */}
-      <div className="max-w-2xl mx-auto px-6 sm:px-0 pb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {cards.map((card) => (
-            <div
-              key={card.title}
-              className={`motion-safe:animate-fade-in-up rounded-2xl border shadow-sm ${
-                card.primary
-                  ? 'sm:col-span-2 bg-gradient-to-br from-pink-50 to-white border-pink-100 p-8 sm:p-10'
-                  : 'bg-white border-pink-50 p-6 sm:p-8'
-              }`}
-            >
-              <div className="text-2xl mb-3" aria-hidden="true">{card.icon}</div>
-              <h2 className="serif text-xl text-pink-900 tracking-[-0.02em] mb-2">{card.title}</h2>
-              <p className="text-sm text-gray-600 leading-relaxed mb-6">{card.desc}</p>
+    <div className="motion-safe:animate-fade-in-up pt-24">
+      {/* ── Hero Section ── */}
+      <section className="relative min-h-[85vh] flex items-center px-8 max-w-screen-2xl mx-auto mb-32">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center w-full">
+          <div className="md:col-span-5 z-10 space-y-10">
+            <h1 className="text-5xl md:text-7xl font-serif leading-[1.1] text-neutral-900 tracking-tight">
+              Your skin, your style, your AI&#8209;perfected look.
+            </h1>
+            <p className="text-lg text-secondary max-w-md font-sans leading-relaxed">
+              Experience the next generation of beauty. GlowUp AI analyzes your features to curate a personalized aesthetic that feels like you, only more luminous.
+            </p>
+            <div className="pt-4">
               <button
                 type="button"
-                onClick={card.onClick}
-                className={`min-h-[44px] px-6 py-3 rounded-full font-bold uppercase tracking-[0.15em] text-xs transition-all active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 ${
-                  card.primary
-                    ? 'bg-pink-600 hover:bg-pink-700 text-white shadow-md hover:shadow-pink-300/50'
-                    : 'bg-white hover:bg-pink-50 text-pink-600 border border-pink-200 hover:border-pink-300'
-                }`}
+                onClick={() => onInspiration('upload')}
+                className="bg-primary text-white px-10 py-5 rounded-none font-label uppercase tracking-[0.2em] text-xs hover:opacity-90 transition-all duration-300 shadow-xl shadow-primary/10 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                {card.cta}
+                Upload a look to start
               </button>
             </div>
-          ))}
+          </div>
+          <div className="md:col-span-7 relative">
+            <div className="aspect-square bg-surface-container-low overflow-hidden editorial-shadow">
+              <div className="w-full h-full bg-gradient-to-br from-neutral-100 via-rose-50 to-neutral-200 flex items-center justify-center">
+                <span className="text-neutral-300 text-6xl">✦</span>
+              </div>
+            </div>
+            {/* Asymmetric Floating Element */}
+            <div className="absolute -bottom-10 -left-10 hidden md:block bg-white/90 backdrop-blur-md p-10 rounded-none editorial-shadow max-w-xs border-l-2 border-primary">
+              <span className="font-serif italic text-2xl block mb-2 text-neutral-900">The Glow Filter</span>
+              <p className="text-[10px] text-secondary font-sans leading-relaxed uppercase tracking-[0.2em]">AI-Optimized Luminosity Profile #042</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Bottom CTA */}
-      <div className="text-center py-12 sm:py-16">
-        <p className="serif text-2xl sm:text-3xl text-pink-900 tracking-[-0.02em] mb-6">Ready to glow up?</p>
-        <button
-          type="button"
-          onClick={() => onInspiration()}
-          className="bg-pink-600 hover:bg-pink-700 active:scale-[0.97] text-white px-14 py-4 min-h-[44px] rounded-full font-bold uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-pink-300/50 transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
-        >
-          Get Started
-        </button>
-      </div>
+      {/* ── The Process ── */}
+      <section className="bg-surface-container-low py-40 px-8 mb-32">
+        <div className="max-w-screen-2xl mx-auto">
+          <div className="mb-24 text-center">
+            <h2 className="font-serif text-4xl md:text-5xl mb-6">The Process</h2>
+            <div className="w-12 h-px bg-primary mx-auto"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
+            <div className="space-y-6">
+              <div className="aspect-[4/5] bg-white overflow-hidden editorial-shadow mb-8 group">
+                <div className="w-full h-full bg-gradient-to-br from-neutral-50 to-neutral-200 flex items-center justify-center">
+                  <span className="text-neutral-300 text-5xl">📸</span>
+                </div>
+              </div>
+              <h3 className="font-serif text-2xl">Capture</h3>
+              <p className="text-secondary font-sans leading-relaxed text-sm">Simply upload a photo. Our AI maps 40,000 unique points on your face with clinical precision.</p>
+            </div>
+            <div className="space-y-6 md:mt-20">
+              <div className="aspect-[4/5] bg-white overflow-hidden editorial-shadow mb-8 group">
+                <div className="w-full h-full bg-gradient-to-br from-rose-50 to-neutral-100 flex items-center justify-center">
+                  <span className="text-neutral-300 text-5xl">🧬</span>
+                </div>
+              </div>
+              <h3 className="font-serif text-2xl">Synthesize</h3>
+              <p className="text-secondary font-sans leading-relaxed text-sm">Our neural network cross-references your skin tone and texture against curated professional looks.</p>
+            </div>
+            <div className="space-y-6">
+              <div className="aspect-[4/5] bg-white overflow-hidden editorial-shadow mb-8 group">
+                <div className="w-full h-full bg-gradient-to-br from-neutral-100 to-neutral-50 flex items-center justify-center">
+                  <span className="text-neutral-300 text-5xl">✨</span>
+                </div>
+              </div>
+              <h3 className="font-serif text-2xl">Refine</h3>
+              <p className="text-secondary font-sans leading-relaxed text-sm">Receive a complete beauty blueprint tailored specifically for your unique bone structure and lifestyle.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature Cards (Curated for you) ── */}
+      <section className="py-32 px-8 bg-white">
+        <div className="max-w-screen-2xl mx-auto">
+          <h2 className="font-serif text-4xl md:text-5xl mb-20 text-center">Curated for you</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12">
+            {features.map((card) => (
+              <button
+                key={card.title}
+                type="button"
+                onClick={card.onClick}
+                className="space-y-6 text-left group cursor-pointer bg-transparent border-none p-0 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
+              >
+                <div className="aspect-[3/4] bg-neutral-50 overflow-hidden relative">
+                  <div className="w-full h-full bg-gradient-to-br from-neutral-50 via-rose-50/30 to-neutral-100 transition-transform duration-700 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <div>
+                  <h4 className="font-serif text-lg text-neutral-900">{card.title}</h4>
+                  <p className="text-secondary font-sans text-[10px] uppercase tracking-widest mt-1">{card.label}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Dark CTA Section ── */}
+      <section className="mb-40 px-8">
+        <div className="max-w-screen-2xl mx-auto bg-neutral-900 overflow-hidden relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 min-h-[500px]">
+            <div className="p-16 md:p-24 flex flex-col justify-center space-y-10">
+              <h2 className="font-serif text-white text-4xl md:text-5xl leading-tight">Advanced intelligence meets artisanal beauty.</h2>
+              <p className="text-neutral-400 text-lg leading-relaxed">Our algorithms are trained on the expertise of world-class artists to ensure your profile is as accurate as it is beautiful.</p>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => onInspiration()}
+                  className="bg-primary text-white px-12 py-5 rounded-none font-label uppercase tracking-[0.2em] text-xs hover:brightness-110 transition-all shadow-xl shadow-black/40 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  Start Your Profile
+                </button>
+              </div>
+            </div>
+            <div className="hidden md:block relative">
+              <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-700 opacity-60" />
+              <div className="absolute inset-0 bg-neutral-900/40" />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
