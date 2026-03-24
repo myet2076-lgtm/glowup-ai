@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 
 interface Props {
   onQuiz: () => void;
@@ -9,40 +9,59 @@ interface Props {
   onHairLab: () => void;
 }
 
-const ExploreItem = ({ label, onClick, tabIndex }: { label: string; onClick: () => void; tabIndex: number }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    tabIndex={tabIndex}
-    className="group flex items-center justify-center gap-2 py-5 px-4 min-h-[44px] bg-white/60 backdrop-blur-sm border border-pink-100 rounded-2xl hover:bg-white/80 hover:border-pink-200 hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.97] transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
-  >
-    <span className="text-sm font-medium text-gray-600 group-hover:text-pink-600 tracking-wide">
-      {label}
-    </span>
-    <span className="text-sm text-pink-400 group-hover:text-pink-600 transition-colors">&rarr;</span>
-  </button>
-);
+interface FeatureCard {
+  icon: string;
+  title: string;
+  desc: string;
+  cta: string;
+  onClick: () => void;
+  primary?: boolean;
+}
 
 const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAnalysis, onHairLab }) => {
-  const [exploreOpen, setExploreOpen] = useState(false);
-  const toggleRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  const handleToggle = () => {
-    if (exploreOpen) {
-      if (panelRef.current && panelRef.current.contains(document.activeElement)) {
-        toggleRef.current?.focus();
-      }
-      setExploreOpen(false);
-    } else {
-      setExploreOpen(true);
-    }
-  };
+  const cards: FeatureCard[] = [
+    {
+      icon: '📸',
+      title: 'Recreate Any Look',
+      desc: 'Upload a photo of any makeup style or describe the look you want. We\u2019ll analyze it, adapt it to your features, and give you a step-by-step tutorial.',
+      cta: 'Upload Inspiration',
+      onClick: () => onInspiration('upload'),
+      primary: true,
+    },
+    {
+      icon: '\u{1F441}\uFE0F',
+      title: 'Know Your Features',
+      desc: 'Get a detailed analysis of your face shape, skin undertone, and best colors for makeup, clothing, and accessories.',
+      cta: 'Analyze My Face',
+      onClick: onFaceAnalysis,
+    },
+    {
+      icon: '⭐',
+      title: 'Find Your Celebrity Twin',
+      desc: 'Upload a selfie and discover which celebrity you resemble most \u2014 plus get their signature makeup secrets adapted for you.',
+      cta: 'Find My Twin',
+      onClick: onCelebrity,
+    },
+    {
+      icon: '💇',
+      title: 'Try New Hairstyles',
+      desc: 'Preview how you\u2019d look with different hair colors and styles before committing. Zero risk, instant results.',
+      cta: 'Open Hair Lab',
+      onClick: onHairLab,
+    },
+    {
+      icon: '✨',
+      title: 'Discover Your Style',
+      desc: 'Not sure what look suits you? Take a quick quiz about your preferences and we\u2019ll create a personalized beauty blueprint.',
+      cta: 'Take the Quiz',
+      onClick: onQuiz,
+    },
+  ];
 
   return (
-    <div className="motion-safe:animate-fade-in-up py-12 sm:py-20">
-      {/* Hero */}
-      <div className="relative max-w-xl mx-auto text-center px-6 sm:px-0">
+    <div className="motion-safe:animate-fade-in-up">
+      {/* Hero — compact */}
+      <div className="relative max-w-xl mx-auto text-center px-6 sm:px-0 py-8 sm:py-12">
         <div
           className="pointer-events-none absolute inset-0 -top-24 -bottom-24"
           style={{ background: 'radial-gradient(ellipse at center, rgba(244,114,182,0.06) 0%, transparent 70%)' }}
@@ -68,66 +87,79 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
             onClick={() => onInspiration('upload')}
             className="bg-pink-600 hover:bg-pink-700 active:scale-[0.97] text-white px-12 py-4 min-h-[44px] rounded-full font-bold uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-pink-300/50 transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
           >
-            Upload Inspiration
+            Get Started &mdash; Upload Inspiration
           </button>
           <button
             type="button"
             onClick={() => onInspiration('selfie')}
             className="text-sm text-pink-600 hover:text-pink-700 underline underline-offset-4 decoration-pink-300 hover:decoration-pink-500 transition-all py-3 min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
           >
-            or start with your selfie &rarr;
+            or take a selfie &rarr;
           </button>
         </div>
       </div>
 
-      {/* Quiz fallback */}
-      <div className="text-center mt-20">
-        <button
-          type="button"
-          onClick={onQuiz}
-          className="group inline-flex items-center gap-1.5 py-3 px-4 min-h-[44px] text-pink-600 hover:text-pink-700 transition-colors text-sm font-medium focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
-        >
-          <span className="text-gray-600">Not sure what you want?</span>
-          <span className="underline underline-offset-4 decoration-pink-300 group-hover:decoration-pink-500 transition-colors">Take a style quiz</span>
-        </button>
-      </div>
-
-      {/* Explore section */}
-      <div className="text-center mt-20">
-        <button
-          type="button"
-          ref={toggleRef}
-          onClick={handleToggle}
-          aria-expanded={exploreOpen}
-          aria-controls="explore-panel"
-          className="inline-flex items-center gap-1 text-xs uppercase tracking-[0.25em] text-gray-600 hover:text-pink-600 transition-colors py-3 min-h-[44px] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 rounded"
-        >
-          <span>Explore more</span>
-          <span
-            className="transition-transform duration-300"
-            style={{ transform: exploreOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-          >
-            ▾
-          </span>
-        </button>
-
-        <div
-          ref={panelRef}
-          id="explore-panel"
-          className="overflow-hidden transition-all duration-300 ease-in-out"
-          style={{
-            maxHeight: exploreOpen ? '500px' : '0px',
-            opacity: exploreOpen ? 1 : 0,
-            pointerEvents: exploreOpen ? 'auto' : 'none',
-          }}
-          aria-hidden={!exploreOpen}
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto px-4 sm:px-0 pt-8">
-            <ExploreItem label="Face Analysis" onClick={onFaceAnalysis} tabIndex={exploreOpen ? 0 : -1} />
-            <ExploreItem label="Hair Lab" onClick={onHairLab} tabIndex={exploreOpen ? 0 : -1} />
-            <ExploreItem label="Celebrity Twin" onClick={onCelebrity} tabIndex={exploreOpen ? 0 : -1} />
+      {/* How It Works */}
+      <div className="max-w-2xl mx-auto px-6 sm:px-0 py-10">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
+            <span className="text-pink-500 font-semibold">&oplus;</span>
+            <span>Upload a look you love</span>
+          </div>
+          <span className="hidden sm:inline text-pink-300">&rarr;</span>
+          <div className="flex items-center gap-2">
+            <span className="text-pink-500 font-semibold">&oplus;</span>
+            <span>AI adapts it to your face</span>
+          </div>
+          <span className="hidden sm:inline text-pink-300">&rarr;</span>
+          <div className="flex items-center gap-2">
+            <span className="text-pink-500 font-semibold">&oplus;</span>
+            <span>Get your personalized tutorial</span>
           </div>
         </div>
+      </div>
+
+      {/* Feature Cards */}
+      <div className="max-w-2xl mx-auto px-6 sm:px-0 pb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {cards.map((card) => (
+            <div
+              key={card.title}
+              className={`motion-safe:animate-fade-in-up rounded-2xl border shadow-sm ${
+                card.primary
+                  ? 'sm:col-span-2 bg-gradient-to-br from-pink-50 to-white border-pink-100 p-8 sm:p-10'
+                  : 'bg-white border-pink-50 p-6 sm:p-8'
+              }`}
+            >
+              <div className="text-2xl mb-3" aria-hidden="true">{card.icon}</div>
+              <h2 className="serif text-xl text-pink-900 tracking-[-0.02em] mb-2">{card.title}</h2>
+              <p className="text-sm text-gray-600 leading-relaxed mb-6">{card.desc}</p>
+              <button
+                type="button"
+                onClick={card.onClick}
+                className={`min-h-[44px] px-6 py-3 rounded-full font-bold uppercase tracking-[0.15em] text-xs transition-all active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 ${
+                  card.primary
+                    ? 'bg-pink-600 hover:bg-pink-700 text-white shadow-md hover:shadow-pink-300/50'
+                    : 'bg-white hover:bg-pink-50 text-pink-600 border border-pink-200 hover:border-pink-300'
+                }`}
+              >
+                {card.cta}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="text-center py-12 sm:py-16">
+        <p className="serif text-2xl sm:text-3xl text-pink-900 tracking-[-0.02em] mb-6">Ready to glow up?</p>
+        <button
+          type="button"
+          onClick={() => onInspiration()}
+          className="bg-pink-600 hover:bg-pink-700 active:scale-[0.97] text-white px-14 py-4 min-h-[44px] rounded-full font-bold uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-pink-300/50 transition-all focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2"
+        >
+          Get Started
+        </button>
       </div>
     </div>
   );
