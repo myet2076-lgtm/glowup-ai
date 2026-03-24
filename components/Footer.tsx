@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Privacy</span></li>
               <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Terms</span></li>
-              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Editorial</span></li>
+
             </ul>
           </div>
           <div className="space-y-6">
