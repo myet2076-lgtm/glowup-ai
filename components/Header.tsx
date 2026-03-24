@@ -108,7 +108,7 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, i
               </div>
             )}
           </div>
-          <input type="file" className="hidden" ref={fileInputRef} onChange={handleUpload} accept="image/*" />
+          <input id="profile-upload" name="profile-upload" type="file" className="hidden" ref={fileInputRef} onChange={handleUpload} accept="image/*" />
         </div>
       </div>
     </header>

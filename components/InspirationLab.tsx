@@ -138,6 +138,8 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
         </div>
         <div className="bg-white editorial-shadow p-6 sm:p-8 space-y-6" style={{ borderRadius: '0.25rem' }}>
           <input
+            id="inspo-upload"
+            name="inspo-upload"
             type="file"
             ref={inspoFileRef}
             accept="image/jpeg,image/png"
@@ -268,7 +270,7 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
           {/* Case C: No photo available, or actively uploading */}
           {(showUploadSelfie || (!localFace && !masterFacePhoto)) && (
             <div className="space-y-4 text-center">
-              <input type="file" ref={fileRef} accept="image/jpeg,image/png" className="hidden" onChange={handleFileSelect} />
+              <input id="selfie-upload" name="selfie-upload" type="file" ref={fileRef} accept="image/jpeg,image/png" className="hidden" onChange={handleFileSelect} />
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}

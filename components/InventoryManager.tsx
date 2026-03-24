@@ -57,7 +57,7 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
           <div className="bg-white p-6 rounded-[32px] border border-pink-50 shadow-xl space-y-4">
             <h3 className="text-[10px] font-black uppercase text-pink-400 tracking-widest">Scan label</h3>
             <button onClick={() => fileInputRef.current?.click()} className="w-full py-4 bg-pink-50 text-pink-600 rounded-2xl font-bold border border-pink-100 text-xs hover:bg-pink-100 transition-colors">Upload Label Photo</button>
-            <input type="file" multiple className="hidden" ref={fileInputRef} onChange={handleFileChange} />
+            <input id="inventory-upload" name="inventory-upload" type="file" multiple className="hidden" ref={fileInputRef} onChange={handleFileChange} />
             {selectedPhotos.length > 0 && <button onClick={() => onScan(selectedPhotos)} className="w-full bg-pink-500 text-white py-4 rounded-2xl font-bold text-xs shadow-lg animate-pulse">Sync {selectedPhotos.length} Items</button>}
           </div>
 
