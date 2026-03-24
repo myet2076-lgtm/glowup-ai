@@ -132,7 +132,8 @@ const ResultsView: React.FC<Props> = ({
         </section>
       )}
 
-      {/* ── Photo Comparison ── */}
+      {/* ── Photo Comparison (not shown for Celebrity Twin — has its own section above) ── */}
+      {!isCelebrityTwin && (
       <section className="space-y-3">
         <h2 className="sr-only">Photo Comparison</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-hidden" style={{ borderRadius: '0.25rem' }}>
@@ -150,12 +151,14 @@ const ResultsView: React.FC<Props> = ({
             ) : (
               <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm px-4 text-center">Try on to preview</div>
             )}
-            <span className="absolute top-3 left-3 text-[10px] text-neutral-900 uppercase tracking-[0.2em] bg-white/80 backdrop-blur-sm px-2 py-1" style={{ borderRadius: '0.125rem' }}>{tryOnImage ? 'Try-On' : (isCelebrityTwin ? 'Preview' : 'Inspiration')}</span>
+            <span className="absolute top-3 left-3 text-[10px] text-neutral-900 uppercase tracking-[0.2em] bg-white/80 backdrop-blur-sm px-2 py-1" style={{ borderRadius: '0.125rem' }}>{tryOnImage ? 'Try-On' : 'Inspiration'}</span>
           </div>
         </div>
       </section>
+      )}
 
-      {/* ── Try-On / Download Button ── */}
+      {/* ── Try-On / Download Button (not for Celebrity Twin) ── */}
+      {!isCelebrityTwin && (
       <div className="flex gap-3">
         {!tryOnImage && (
           <button
@@ -177,6 +180,7 @@ const ResultsView: React.FC<Props> = ({
           </button>
         )}
       </div>
+      )}
 
       {/* ── Tutorial Steps ── */}
       {analysis.tutorialSteps.length > 0 && (
