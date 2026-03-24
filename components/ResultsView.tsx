@@ -104,6 +104,34 @@ const ResultsView: React.FC<Props> = ({
         )}
       </section>
 
+      {/* ── Celebrity Twin Comparison ── */}
+      {isCelebrityTwin && analysis.celebrityMatch && (
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="font-serif text-2xl text-neutral-900 tracking-[-0.02em]">Your Celebrity Twin</h2>
+            <span className="text-[10px] text-secondary uppercase tracking-[0.2em]">AI Match</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* User photo */}
+            <div className="relative aspect-[3/4] bg-surface-container-high overflow-hidden" style={{ borderRadius: '0.25rem' }}>
+              {userPhoto && <img src={userPhoto} className="w-full h-full object-cover" alt="You" />}
+              <span className="absolute top-3 left-3 text-[10px] text-neutral-900 uppercase tracking-[0.2em] bg-white/80 backdrop-blur-sm px-2 py-1" style={{ borderRadius: '0.125rem' }}>You</span>
+            </div>
+            {/* Celebrity search link */}
+            <a
+              href={`https://www.google.com/search?q=${encodeURIComponent(analysis.celebrityMatch + ' portrait face')}&tbm=isch`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative aspect-[3/4] bg-surface-container-low overflow-hidden flex flex-col items-center justify-center p-8 text-center group hover:bg-surface-container-high transition-all duration-300"
+              style={{ borderRadius: '0.25rem' }}
+            >
+              <p className="font-serif italic text-2xl text-neutral-900 mb-3">{analysis.celebrityMatch}</p>
+              <p className="text-[10px] text-secondary uppercase tracking-[0.2em] group-hover:text-primary transition-colors duration-300">Click to see photos →</p>
+            </a>
+          </div>
+        </section>
+      )}
+
       {/* ── Photo Comparison ── */}
       <section className="space-y-3">
         <h2 className="sr-only">Photo Comparison</h2>
@@ -122,7 +150,7 @@ const ResultsView: React.FC<Props> = ({
             ) : (
               <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm px-4 text-center">Try on to preview</div>
             )}
-            <span className="absolute top-3 left-3 text-[10px] text-neutral-900 uppercase tracking-[0.2em] bg-white/80 backdrop-blur-sm px-2 py-1" style={{ borderRadius: '0.125rem' }}>{tryOnImage ? 'Try-On' : 'Inspiration'}</span>
+            <span className="absolute top-3 left-3 text-[10px] text-neutral-900 uppercase tracking-[0.2em] bg-white/80 backdrop-blur-sm px-2 py-1" style={{ borderRadius: '0.125rem' }}>{tryOnImage ? 'Try-On' : (isCelebrityTwin ? 'Preview' : 'Inspiration')}</span>
           </div>
         </div>
       </section>
