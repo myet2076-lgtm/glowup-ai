@@ -35,7 +35,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
     <div className="motion-safe:animate-fade-in-up">
       {/* ── Split Hero with Feature Showcase ── */}
       <section className="px-8 max-w-screen-2xl mx-auto pt-28 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Left: Hero Text */}
           <div className="md:col-span-5 space-y-8">
             <h1 className="text-4xl md:text-6xl font-serif leading-[1.1] text-neutral-900 tracking-tight">
