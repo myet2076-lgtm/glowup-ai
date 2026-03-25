@@ -316,7 +316,15 @@ export const generateTryOn = async (faceImage: string, lookDescription: string):
   const response = await getClient().images.edit({
     model: 'gpt-image-1',
     image: file,
-    prompt: `Apply this makeup style: ${lookDescription}. Keep the person's face exactly the same, just add the makeup. Photorealistic result.`,
+    prompt: `You are a professional makeup artist. Apply the following makeup style to this person's face: ${lookDescription}.
+
+CRITICAL RULES:
+- DO NOT change the person's facial features, bone structure, skin color, or face shape
+- DO NOT change their eye color, eye shape, nose, lips shape, or jawline
+- ONLY add makeup ON TOP of their existing face (foundation, eyeshadow, lipstick, blush, contour, etc.)
+- The result must look like the SAME person wearing makeup, not a different person
+- Maintain the exact same lighting, angle, and background
+- Photorealistic quality, as if photographed by a professional beauty photographer`,
   });
   const output = response.data?.[0];
   if (output?.b64_json) return `data:image/png;base64,${output.b64_json}`;
@@ -329,7 +337,15 @@ export const generateHairTryOn = async (faceImage: string, style: string, color:
   const response = await getClient().images.edit({
     model: 'gpt-image-1',
     image: file,
-    prompt: `Give this person ${color} ${style} hair. Keep the person's face exactly the same, only change the hair. Photorealistic result.`,
+    prompt: `You are a professional hairstylist. Change ONLY the hair on this person to: ${color} ${style}.
+
+CRITICAL RULES:
+- DO NOT change the person's facial features, skin, makeup, or face shape
+- DO NOT change their eye color, nose, lips, or jawline
+- ONLY modify the hair (color, style, length, texture)
+- The result must look like the SAME person with a new hairstyle
+- Maintain the exact same lighting, angle, and background
+- Photorealistic quality, as if photographed in a professional salon`,
   });
   const output = response.data?.[0];
   if (output?.b64_json) return `data:image/png;base64,${output.b64_json}`;
