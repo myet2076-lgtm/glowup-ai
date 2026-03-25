@@ -38,7 +38,6 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           {/* Left: Hero Text */}
           <div className="md:col-span-5 space-y-8">
-            <p className="text-[10px] text-secondary uppercase tracking-[0.2em]">GlowUp AI</p>
             <h1 className="text-4xl md:text-6xl font-serif leading-[1.1] text-neutral-900 tracking-tight">
               Your skin, your style, your AI&#8209;perfected look.
             </h1>
