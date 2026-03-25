@@ -19,7 +19,7 @@ const CompactCard = ({ title, label, image, onClick }: { title: string; label: s
   <button
     type="button"
     onClick={onClick}
-    className="relative aspect-[3/2] overflow-hidden editorial-shadow group text-left focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    className="relative aspect-square overflow-hidden editorial-shadow group text-left focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     style={{ borderRadius: '0.25rem' }}
   >
     <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -72,7 +72,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
             </button>
 
             {/* Secondary: 2x2 grid of compact cards */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <CompactCard title="Face Analysis" label="Know Your Features" image={FACE_IMAGE} onClick={onFaceAnalysis} />
               <CompactCard title="Celebrity Twin" label="Find Your Match" image={CELEB_IMAGE} onClick={onCelebrity} />
               <CompactCard title="Hair Lab" label="Try New Styles" image={HAIR_IMAGE} onClick={onHairLab} />
