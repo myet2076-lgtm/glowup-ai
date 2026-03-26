@@ -316,18 +316,18 @@ export const generateTryOn = async (faceImage: string, lookDescription: string):
   const response = await getClient().images.edit({
     model: 'gpt-image-1',
     image: file,
-    prompt: `You are a professional makeup artist retouching the ORIGINAL photo.
-Apply this makeup style: ${lookDescription}.
+    prompt: `PHOTO RETOUCH ONLY — add makeup to the ORIGINAL photo.
+Style to apply: ${lookDescription}.
 
-CRITICAL RULES:
-- Keep the person's identity 100% intact.
-- DO NOT change facial features, bone structure, skin tone, face shape, eye shape/color, nose, lips, jawline, or expression.
-- DO NOT beautify, reshape, smooth, or re-generate the face.
-- ONLY layer makeup ON TOP of the original face (foundation, eyeshadow, eyeliner, lashes, lipstick, blush, contour, highlight).
-- Keep the exact same lighting, camera angle, lens perspective, and background.
-- Output must look like the SAME person, realistic and natural, with makeup added only.
-- Avoid uncanny or plastic look; preserve natural skin texture.
-- Photorealistic editorial quality.`,
+ABSOLUTE IDENTITY RULES (violation = failure):
+1. SAME PERSON — identical gender, age, ethnicity, face shape, bone structure.
+2. DO NOT change: sex/gender presentation, jawline, nose, eye shape, eye color, lip shape, skin color, hair, ears, teeth, expression, head angle.
+3. DO NOT feminize masculine faces or masculinize feminine faces.
+4. DO NOT smooth skin texture, remove wrinkles, or resize any facial feature.
+5. ONLY ADD: foundation/concealer coverage, eyeshadow color, eyeliner, mascara, lip color, blush, contour shading, highlight — as a thin cosmetic layer ON TOP of the unchanged face.
+6. The before and after must be recognizable as the EXACT same person at a glance.
+7. Preserve: lighting, camera angle, background, clothing, accessories.
+8. Photorealistic quality — natural, not airbrushed or CGI.`,
   });
   const output = response.data?.[0];
   if (output?.b64_json) return `data:image/png;base64,${output.b64_json}`;
