@@ -1,5 +1,5 @@
 
-export type AppState = 'landing' | 'quiz' | 'celebrity' | 'inspiration' | 'inventory' | 'results' | 'face-analysis' | 'wishlist' | 'hair-lab';
+export type AppState = 'landing' | 'quiz' | 'celebrity' | 'inspiration' | 'inventory' | 'results' | 'face-analysis' | 'wishlist' | 'hair-lab' | 'history' | 'history-detail';
 
 export interface Product {
   name: string;

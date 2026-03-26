@@ -5,6 +5,7 @@ interface Props {
   onInventory: () => void;
   onWishlist: () => void;
   onRestart: () => void;
+  onHistory: () => void;
   inventoryCount: number;
   wishlistCount: number;
   masterPhoto: string | null;
@@ -12,7 +13,7 @@ interface Props {
   validateFace?: (photo: string) => Promise<boolean>;
 }
 
-const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto, validateFace }) => {
+const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, onHistory, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto, validateFace }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -50,6 +51,11 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, i
         </div>
 
         <div className="flex items-center gap-6">
+          {/* History Icon */}
+          <button type="button" onClick={onHistory} className="relative p-2 text-neutral-600 hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer" aria-label="History">
+            <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>history</span>
+          </button>
+
           {/* Vanity Icon */}
           <button type="button" onClick={onInventory} className="relative hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer p-2" aria-label="Digital Vanity">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">

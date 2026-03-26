@@ -12,6 +12,8 @@ import {
   generateHairTryOn,
   validateFaceImage
 } from './openaiService';
+import { saveAnalysis, updateAnalysisTryOn, loadAnalysis, loadProfilePhoto, saveProfilePhoto, generateId, SavedAnalysis } from './persistence';
+import HistoryView from './components/HistoryView';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Landing from './components/Landing';
@@ -42,6 +44,8 @@ const App: React.FC = () => {
   const [tryOnImage, setTryOnImage] = useState<string | null>(null);
   const [hairResultImage, setHairResultImage] = useState<string | null>(null);
   const [inspoEntryHint, setInspoEntryHint] = useState<'upload' | 'selfie' | null>(null);
+  const [currentAnalysisId, setCurrentAnalysisId] = useState<string | null>(null);
+  const [historyDetailData, setHistoryDetailData] = useState<SavedAnalysis | null>(null);
 
   useEffect(() => {
     let interval: any;
@@ -55,6 +59,20 @@ const App: React.FC = () => {
     }
     return () => clearInterval(interval);
   }, [loading]);
+
+  // Load profile photo from IndexedDB on mount
+  useEffect(() => {
+    loadProfilePhoto().then(photo => {
+      if (photo) setMasterFacePhoto(photo);
+    });
+  }, []);
+
+  // Persist profile photo when it changes
+  useEffect(() => {
+    if (masterFacePhoto) {
+      saveProfilePhoto(masterFacePhoto);
+    }
+  }, [masterFacePhoto]);
 
   const handleRestart = () => {
     setAnalysis(null);
@@ -121,9 +139,20 @@ const App: React.FC = () => {
     setLoadingMessage("Curating beauty blueprint...");
     try {
       const result = await getMakeupFromQuiz(answers);
+      const id = generateId();
+      setCurrentAnalysisId(id);
       setAnalysis(result);
       setResultSource('quiz');
       setCurrentPage('results');
+      await saveAnalysis({
+        id,
+        timestamp: Date.now(),
+        source: 'quiz',
+        analysis: result,
+        userPhoto: masterFacePhoto,
+        inspoPhoto: null,
+        tryOnImage: null,
+      });
     } catch (err) { alert("Quiz error!"); }
     finally { setLoading(false); }
   };
@@ -143,9 +172,20 @@ const App: React.FC = () => {
     setLoadingMessage("Searching your celebrity twin...");
     try {
       const result = await analyzeCelebrityLookAlike(activePhoto.split(',')[1]);
+      const id = generateId();
+      setCurrentAnalysisId(id);
       setAnalysis(result);
       setResultSource('celebrity');
       setCurrentPage('results');
+      await saveAnalysis({
+        id,
+        timestamp: Date.now(),
+        source: 'celebrity',
+        analysis: result,
+        userPhoto: activePhoto,
+        inspoPhoto: null,
+        tryOnImage: null,
+      });
     } catch (err) { alert("Celebrity search failed!"); }
     finally { setLoading(false); }
   };
@@ -189,9 +229,20 @@ const App: React.FC = () => {
     setLoadingMessage("Analyzing inspiration...");
     try {
       const result = await analyzeInspirationLook(newInspoPhoto, facePhoto, newInspoText);
+      const id = generateId();
+      setCurrentAnalysisId(id);
       setAnalysis(result);
       setResultSource('inspiration');
       setCurrentPage('results');
+      await saveAnalysis({
+        id,
+        timestamp: Date.now(),
+        source: 'inspiration',
+        analysis: result,
+        userPhoto: facePhoto,
+        inspoPhoto: newInspoPhoto,
+        tryOnImage: null,
+      });
     } catch {
       throw new Error('Analysis failed');
     } finally {
@@ -207,6 +258,9 @@ const App: React.FC = () => {
     try {
       const result = await generateTryOn(activeFace.split(',')[1], `${analysis.styleName}: ${analysis.description}`);
       setTryOnImage(result);
+      if (currentAnalysisId) {
+        await updateAnalysisTryOn(currentAnalysisId, result);
+      }
     } catch (err) { alert("Try-on failed."); }
     finally { setLoading(false); }
   };
@@ -260,6 +314,7 @@ const App: React.FC = () => {
         onHome={handleRestart} 
         onInventory={() => setCurrentPage('inventory')}
         onWishlist={() => setCurrentPage('wishlist')}
+        onHistory={() => setCurrentPage('history')}
         onRestart={handleRestart}
         inventoryCount={inventory.length}
         wishlistCount={wishlist.length}
@@ -372,6 +427,35 @@ const App: React.FC = () => {
             onScan={handleInventoryScan} 
             onAddManual={handleManualAdd}
             onBack={() => setCurrentPage('landing')} 
+          />
+        )}
+
+        {currentPage === 'history' && (
+          <HistoryView
+            onBack={() => setCurrentPage('landing')}
+            onViewDetail={async (id) => {
+              const data = await loadAnalysis(id);
+              if (data) {
+                setHistoryDetailData(data);
+                setCurrentPage('history-detail');
+              }
+            }}
+          />
+        )}
+
+        {currentPage === 'history-detail' && historyDetailData && (
+          <ResultsView
+            analysis={historyDetailData.analysis}
+            inventory={[]}
+            userPhoto={historyDetailData.userPhoto}
+            inspoPhoto={historyDetailData.inspoPhoto}
+            onBack={() => setCurrentPage('history')}
+            onRestart={() => setCurrentPage('landing')}
+            onTryOn={() => {}}
+            onAddToWishlist={() => {}}
+            tryOnImage={historyDetailData.tryOnImage}
+            isCelebrityTwin={historyDetailData.source === 'celebrity'}
+            readonly={true}
           />
         )}
 
