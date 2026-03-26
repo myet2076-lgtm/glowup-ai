@@ -81,8 +81,7 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
                   style={{ borderRadius: '0.25rem' }}
                   aria-label="Open account menu"
                 >
-                  <span className="hidden sm:inline">{userEmail.length > 14 ? `${userEmail.slice(0, 14)}…` : userEmail}</span>
-                  <span className="material-symbols-outlined sm:hidden" style={{ fontSize: '20px' }}>person</span>
+                  {userEmail.length > 14 ? `${userEmail.slice(0, 14)}…` : userEmail}
                 </button>
                 {showAccountMenu && (
                   <div className="absolute top-full right-0 mt-2 bg-white editorial-shadow p-2 min-w-[180px] z-50" style={{ borderRadius: '0.25rem' }}>
