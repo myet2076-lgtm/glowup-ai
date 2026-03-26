@@ -67,6 +67,11 @@ const App: React.FC = () => {
     });
   }, []);
 
+  // Load inventory from IndexedDB on mount
+  useEffect(() => {
+    loadAllInventory().then(items => setInventory(items));
+  }, []);
+
   // Persist profile photo when it changes
   useEffect(() => {
     if (masterFacePhoto) {
@@ -286,7 +291,11 @@ const App: React.FC = () => {
     setLoadingMessage("Scanning vanity...");
     try {
       const results = await analyzeInventory(photos.map(p => p.split(',')[1]));
-      setInventory(prev => [...prev, ...results]);
+      const itemsWithIds = results.map(p => ({ ...p, id: generateId() }));
+      for (const item of itemsWithIds) {
+        await saveInventoryItem(item);
+      }
+      setInventory(prev => [...prev, ...itemsWithIds]);
     } catch (err) { alert("Scan failed."); }
     finally { setLoading(false); }
   };
@@ -296,12 +305,21 @@ const App: React.FC = () => {
     setLoadingMessage("Validating product details...");
     try {
       const official = await normalizeProduct(brand, name);
-      setInventory(prev => [...prev, { ...official, category: official.category || 'other' }]);
+      const item = { ...official, category: official.category || 'other', id: generateId() };
+      await saveInventoryItem(item);
+      setInventory(prev => [...prev, item]);
     } catch (err) {
-      setInventory(prev => [...prev, { brand, name, category: 'other' }]);
+      const item = { brand, name, category: 'other', id: generateId() };
+      await saveInventoryItem(item);
+      setInventory(prev => [...prev, item]);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteInventoryItem = async (id: string) => {
+    await deleteInventoryItem(id);
+    setInventory(prev => prev.filter(p => p.id !== id));
   };
 
   const removeFromWishlist = (idx: number) => {
@@ -427,6 +445,7 @@ const App: React.FC = () => {
             currentInventory={inventory} 
             onScan={handleInventoryScan} 
             onAddManual={handleManualAdd}
+            onDelete={handleDeleteInventoryItem}
             onBack={() => setCurrentPage('landing')} 
           />
         )}
