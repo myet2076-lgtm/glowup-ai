@@ -270,16 +270,16 @@ const App: React.FC = () => {
     finally { setLoading(false); }
   };
 
-  const handleHairTryOn = async (style: string, color: string) => {
+  const handleHairTryOn = async (style: string, color: string, mode: 'both' | 'keep-style' | 'keep-color') => {
     if (!masterFacePhoto) return;
 
     const isValid = await validateFaceWithUI(masterFacePhoto);
     if (!isValid) return;
 
     setLoading(true);
-    setLoadingMessage(`Styling hair: ${color} ${style}...`);
+    setLoadingMessage(mode === 'keep-style' ? `Changing hair color to ${color}...` : mode === 'keep-color' ? `Changing hairstyle to ${style}...` : `Styling hair: ${color} ${style}...`);
     try {
-      const result = await generateHairTryOn(masterFacePhoto.split(',')[1], style, color);
+      const result = await generateHairTryOn(masterFacePhoto.split(',')[1], style, color, mode);
       setHairResultImage(result);
     } catch (err) { alert("Hair lab failed."); }
     finally { setLoading(false); }
@@ -402,7 +402,7 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'wishlist' && (
-          <WishlistView wishlist={wishlist} onRemove={removeFromWishlist} onBack={() => setCurrentPage('landing')} onRestart={handleRestart} />
+          <WishlistView wishlist={wishlist} onRemove={removeFromWishlist} onBack={() => setCurrentPage('landing')} />
         )}
 
         {currentPage === 'quiz' && (

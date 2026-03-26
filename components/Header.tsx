@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import glowaLogo from '../assets/glowa-logo.jpg';
 
 interface Props {
   onHome: () => void;
@@ -38,27 +39,29 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
     reader.readAsDataURL(file);
   };
 
+  const aiPages = ['landing', 'quiz', 'celebrity', 'inspiration', 'results', 'face-analysis', 'hair-lab', 'history', 'history-detail'];
+  const isAiTabActive = !activePage || aiPages.includes(activePage);
+
   return (
     <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md transition-all duration-300 border-b border-neutral-50">
       <div className="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
-        <button type="button" onClick={onHome} className="cursor-pointer min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent border-none p-0" aria-label="Go to home">
-          <span className="text-2xl font-serif italic text-neutral-900">GlowUp AI</span>
+        <button type="button" onClick={onHome} className="cursor-pointer min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent border-none p-0 flex items-center gap-3" aria-label="Go to home">
+          <img src={glowaLogo} alt="Glowa logo" className="w-8 h-8 object-cover" style={{ borderRadius: '0.35rem' }} />
+          <span className="text-2xl font-serif italic text-neutral-900">Glowa</span>
         </button>
 
         <div className="hidden md:flex gap-12 items-center">
-          <button type="button" onClick={onHome} className={`pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent cursor-pointer transition-colors duration-300 border-t-0 border-l-0 border-r-0 ${!activePage || activePage === 'landing' || activePage === 'quiz' || activePage === 'celebrity' || activePage === 'inspiration' || activePage === 'results' || activePage === 'face-analysis' || activePage === 'hair-lab' || activePage === 'history' || activePage === 'history-detail' ? 'text-neutral-900 border-b border-primary' : 'text-neutral-500 hover:text-neutral-800 border-b border-transparent'}`}>The AI</button>
+          <button type="button" onClick={onHome} className={`pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent cursor-pointer transition-colors duration-300 border-t-0 border-l-0 border-r-0 ${isAiTabActive ? 'text-neutral-900 border-b border-primary' : 'text-neutral-500 hover:text-neutral-800 border-b border-transparent'}`}>The AI</button>
           <button type="button" onClick={onInventory} className={`pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent cursor-pointer transition-colors duration-300 border-t-0 border-l-0 border-r-0 ${activePage === 'inventory' ? 'text-neutral-900 border-b border-primary' : 'text-neutral-500 hover:text-neutral-800 border-b border-transparent'}`}>Vanity</button>
           <button type="button" onClick={onWishlist} className={`pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent cursor-pointer transition-colors duration-300 border-t-0 border-l-0 border-r-0 ${activePage === 'wishlist' ? 'text-neutral-900 border-b border-primary' : 'text-neutral-500 hover:text-neutral-800 border-b border-transparent'}`}>Wishlist</button>
         </div>
 
         <div className="flex items-center gap-6">
-          {/* History Icon */}
           <button type="button" onClick={onHistory} className="relative p-2 text-neutral-600 hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer" aria-label="History">
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>history</span>
           </button>
 
-          {/* Vanity Icon */}
-          <button type="button" onClick={onInventory} className="relative hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer p-2" aria-label="Digital Vanity">
+          <button type="button" onClick={onInventory} className="md:hidden relative hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer p-2" aria-label="Digital Vanity">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="8" r="7"/>
               <polyline points="12 15 12 22"/>
@@ -67,8 +70,7 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
             {inventoryCount > 0 && <span className="absolute top-0 right-0 bg-primary text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white">{inventoryCount}</span>}
           </button>
 
-          {/* Wishlist Icon */}
-          <button type="button" onClick={onWishlist} className="relative hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer p-2" aria-label="Wishlist">
+          <button type="button" onClick={onWishlist} className="md:hidden relative hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer p-2" aria-label="Wishlist">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
             {wishlistCount > 0 && <span className="absolute top-0 right-0 bg-primary text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white">{wishlistCount}</span>}
           </button>

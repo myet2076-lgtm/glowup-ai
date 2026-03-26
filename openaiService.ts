@@ -283,7 +283,7 @@ export const analyzeInventory = async (base64Images: string[]): Promise<Product[
   for (const img of base64Images) {
     content.push({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${img}` } });
   }
-  content.push({ type: 'text', text: 'Identify makeup products in these images.' });
+  content.push({ type: 'text', text: 'Identify makeup products in these images. Prioritize exact brand + product name from visible labels. If the label is unclear, return your best guess but keep the name conservative (do not hallucinate shades or variants that are not visible).' });
 
   const response = await getClient().chat.completions.create({
     model: 'gpt-4o',
@@ -316,15 +316,18 @@ export const generateTryOn = async (faceImage: string, lookDescription: string):
   const response = await getClient().images.edit({
     model: 'gpt-image-1',
     image: file,
-    prompt: `You are a professional makeup artist. Apply the following makeup style to this person's face: ${lookDescription}.
+    prompt: `You are a professional makeup artist retouching the ORIGINAL photo.
+Apply this makeup style: ${lookDescription}.
 
 CRITICAL RULES:
-- DO NOT change the person's facial features, bone structure, skin color, or face shape
-- DO NOT change their eye color, eye shape, nose, lips shape, or jawline
-- ONLY add makeup ON TOP of their existing face (foundation, eyeshadow, lipstick, blush, contour, etc.)
-- The result must look like the SAME person wearing makeup, not a different person
-- Maintain the exact same lighting, angle, and background
-- Photorealistic quality, as if photographed by a professional beauty photographer`,
+- Keep the person's identity 100% intact.
+- DO NOT change facial features, bone structure, skin tone, face shape, eye shape/color, nose, lips, jawline, or expression.
+- DO NOT beautify, reshape, smooth, or re-generate the face.
+- ONLY layer makeup ON TOP of the original face (foundation, eyeshadow, eyeliner, lashes, lipstick, blush, contour, highlight).
+- Keep the exact same lighting, camera angle, lens perspective, and background.
+- Output must look like the SAME person, realistic and natural, with makeup added only.
+- Avoid uncanny or plastic look; preserve natural skin texture.
+- Photorealistic editorial quality.`,
   });
   const output = response.data?.[0];
   if (output?.b64_json) return `data:image/png;base64,${output.b64_json}`;
@@ -332,20 +335,34 @@ CRITICAL RULES:
   return '';
 };
 
-export const generateHairTryOn = async (faceImage: string, style: string, color: string): Promise<string> => {
+export const generateHairTryOn = async (
+  faceImage: string,
+  style: string,
+  color: string,
+  mode: 'both' | 'keep-style' | 'keep-color' = 'both'
+): Promise<string> => {
   const file = base64ToFile(faceImage, 'face.png', 'image/png');
+
+  const hairInstruction =
+    mode === 'keep-style'
+      ? `Keep the CURRENT hairstyle exactly the same. Change ONLY the hair color to ${color}.`
+      : mode === 'keep-color'
+        ? `Keep the CURRENT hair color exactly the same. Change ONLY the hairstyle to ${style}.`
+        : `Change hair to this style and color: ${color} ${style}.`;
+
   const response = await getClient().images.edit({
     model: 'gpt-image-1',
     image: file,
-    prompt: `You are a professional hairstylist. Change ONLY the hair on this person to: ${color} ${style}.
+    prompt: `You are a professional hairstylist. ${hairInstruction}
 
 CRITICAL RULES:
-- DO NOT change the person's facial features, skin, makeup, or face shape
-- DO NOT change their eye color, nose, lips, or jawline
-- ONLY modify the hair (color, style, length, texture)
-- The result must look like the SAME person with a new hairstyle
-- Maintain the exact same lighting, angle, and background
-- Photorealistic quality, as if photographed in a professional salon`,
+- Keep the person's identity 100% intact.
+- DO NOT change facial features, skin tone/texture, makeup, face shape, expression, or background.
+- DO NOT change eye color, nose, lips, jawline.
+- ONLY modify allowed hair attributes based on the instruction above.
+- Keep the exact same lighting, camera angle, and framing.
+- The result must look like the SAME person, realistic and natural.
+- Photorealistic quality, as if photographed in a professional salon.`,
   });
   const output = response.data?.[0];
   if (output?.b64_json) return `data:image/png;base64,${output.b64_json}`;

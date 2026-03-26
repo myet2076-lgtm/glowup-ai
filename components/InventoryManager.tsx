@@ -64,6 +64,9 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
             {/* Scan Products Card */}
             <div className="bg-white editorial-shadow p-6 space-y-5" style={{ borderRadius: '0.25rem' }}>
               <h3 className="text-[10px] uppercase tracking-[0.2em] text-secondary font-medium">Scan Products</h3>
+              <p className="text-xs text-secondary leading-relaxed">
+                Scan the item&apos;s label. If there is no label, manually type the product name and brand in the field below.
+              </p>
 
               <button
                 type="button"
