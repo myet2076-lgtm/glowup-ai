@@ -82,7 +82,7 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
                   aria-label="Open account menu"
                 >
                   <span className="hidden sm:inline">{userEmail.length > 14 ? `${userEmail.slice(0, 14)}…` : userEmail}</span>
-                  <span className="sm:hidden material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>
+                  <span className="material-symbols-outlined sm:hidden" style={{ fontSize: '20px' }}>person</span>
                 </button>
                 {showAccountMenu && (
                   <div className="absolute top-full right-0 mt-2 bg-white editorial-shadow p-2 min-w-[180px] z-50" style={{ borderRadius: '0.25rem' }}>
@@ -126,9 +126,9 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
             {wishlistCount > 0 && <span className="absolute top-0 right-0 bg-primary text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white">{wishlistCount}</span>}
           </button>
 
-          {/* Profile Photo */}
+          {/* Profile Photo — hide empty state when logged in to reduce clutter */}
           <div
-            className="relative"
+            className={`relative ${!masterPhoto && userEmail ? 'hidden' : ''}`}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
             onFocus={() => setShowTooltip(true)}
