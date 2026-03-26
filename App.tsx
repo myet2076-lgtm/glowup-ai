@@ -12,7 +12,7 @@ import {
   generateHairTryOn,
   validateFaceImage
 } from './openaiService';
-import { saveAnalysis, updateAnalysisTryOn, loadAnalysis, loadProfilePhoto, saveProfilePhoto, generateId, SavedAnalysis } from './persistence';
+import { saveAnalysis, updateAnalysisTryOn, loadAnalysis, loadProfilePhoto, saveProfilePhoto, generateId, SavedAnalysis, loadAllInventory, saveInventoryItem, deleteInventoryItem } from './persistence';
 import HistoryView from './components/HistoryView';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -35,7 +35,7 @@ const App: React.FC = () => {
   
   const [analysis, setAnalysis] = useState<MakeupAnalysis | null>(null);
   const [faceAnalysis, setFaceAnalysis] = useState<FaceAnalysisResult | null>(null);
-  const [inventory, setInventory] = useState<Product[]>([]);
+  const [inventory, setInventory] = useState<(Product & { id: string })[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [masterFacePhoto, setMasterFacePhoto] = useState<string | null>(null);
   const [inspoPhoto, setInspoPhoto] = useState<string | null>(null);
@@ -315,6 +315,7 @@ const App: React.FC = () => {
         onInventory={() => setCurrentPage('inventory')}
         onWishlist={() => setCurrentPage('wishlist')}
         onHistory={() => setCurrentPage('history')}
+        activePage={currentPage}
         onRestart={handleRestart}
         inventoryCount={inventory.length}
         wishlistCount={wishlist.length}

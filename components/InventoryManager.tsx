@@ -3,13 +3,14 @@ import React, { useRef, useState } from 'react';
 import { Product } from '../types';
 
 interface Props {
-  currentInventory: Product[];
+  currentInventory: (Product & { id: string })[];
   onScan: (photos: string[]) => void;
   onAddManual: (brand: string, name: string) => void;
+  onDelete: (id: string) => void;
   onBack: () => void;
 }
 
-const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManual, onBack }) => {
+const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManual, onDelete, onBack }) => {
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [manualName, setManualName] = useState('');
   const [manualBrand, setManualBrand] = useState('');
@@ -35,70 +36,148 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
     }
   };
 
-  const getProductIcon = (cat: string) => {
-    cat = cat.toLowerCase();
-    if (cat.includes('lip')) return '💄';
-    if (cat.includes('eye') || cat.includes('mascara')) return '👁️';
-    if (cat.includes('foundation') || cat.includes('face')) return '🧴';
-    if (cat.includes('blush') || cat.includes('palette')) return '🎨';
-    return '✨';
-  };
-
   return (
-    <div className="space-y-12 py-8 pt-32 animate-in slide-in-from-bottom-4 max-w-5xl mx-auto px-4">
-      <div className="flex items-center justify-between">
-        <button onClick={onBack} className="text-pink-600 font-bold hover:translate-x-[-4px] transition-transform">← Home</button>
-        <h2 className="serif text-4xl text-pink-900">Your Digital Vanity</h2>
-        <div className="w-10"></div>
-      </div>
+    <div className="min-h-screen bg-white py-8 pt-32 animate-in slide-in-from-bottom-4">
+      <div className="max-w-5xl mx-auto px-4 space-y-10">
 
-      <div className="grid md:grid-cols-4 gap-8">
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-[32px] border border-pink-50 shadow-xl space-y-4">
-            <h3 className="text-[10px] font-black uppercase text-pink-400 tracking-widest">Scan label</h3>
-            <button onClick={() => fileInputRef.current?.click()} className="w-full py-4 bg-pink-50 text-pink-600 rounded-2xl font-bold border border-pink-100 text-xs hover:bg-pink-100 transition-colors">Upload Label Photo</button>
-            <input id="inventory-upload" name="inventory-upload" type="file" multiple className="hidden" ref={fileInputRef} onChange={handleFileChange} />
-            {selectedPhotos.length > 0 && <button onClick={() => onScan(selectedPhotos)} className="w-full bg-pink-500 text-white py-4 rounded-2xl font-bold text-xs shadow-lg animate-pulse">Sync {selectedPhotos.length} Items</button>}
-          </div>
-
-          <div className="bg-white p-6 rounded-[32px] border border-pink-50 shadow-xl space-y-4">
-            <h3 className="text-[10px] font-black uppercase text-pink-400 tracking-widest">Manual Entry</h3>
-            <input value={manualBrand} onChange={e => setManualBrand(e.target.value)} placeholder="Brand (e.g. Dior)" className="w-full p-3 rounded-xl border border-pink-50 text-xs outline-none focus:ring-1 ring-pink-200 transition-all" />
-            <input value={manualName} onChange={e => setManualName(e.target.value)} placeholder="Product Name" className="w-full p-3 rounded-xl border border-pink-50 text-xs outline-none focus:ring-1 ring-pink-200 transition-all" />
-            <button onClick={handleManualAdd} className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-black transition-all">Add to Vanity</button>
-          </div>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-sm text-neutral-900 hover:opacity-70 transition-opacity min-h-[44px] px-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
+            aria-label="Go back"
+          >
+            <span className="material-symbols-outlined align-middle" style={{ fontSize: '20px' }}>arrow_back</span>
+            <span className="ml-1 align-middle">Back</span>
+          </button>
+          <h2 className="font-serif text-3xl text-neutral-900 tracking-tight">Your Collection</h2>
+          <div className="w-20" aria-hidden="true"></div>
         </div>
 
-        <div className="md:col-span-3">
-          <div className="bg-white p-10 rounded-[50px] border border-pink-50 shadow-inner min-h-[500px] relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-tr from-pink-50/20 to-transparent pointer-events-none"></div>
-            
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-8 relative z-10">
-              {currentInventory.length === 0 ? (
-                <div className="col-span-full h-80 flex flex-col items-center justify-center text-pink-200 space-y-4 opacity-50">
-                  <span className="text-7xl">🧴</span>
-                  <p className="font-bold text-sm italic tracking-widest">Your vanity is a blank canvas...</p>
-                </div>
-              ) : (
-                currentInventory.map((item, i) => (
-                  <a 
-                    key={i} 
-                    href={`https://www.sephora.com/search?keyword=${encodeURIComponent(item.brand + ' ' + item.name)}`}
-                    target="_blank"
-                    className="flex flex-col items-center group animate-in zoom-in duration-300"
+        {/* Main Grid */}
+        <div className="grid md:grid-cols-12 gap-8">
+
+          {/* Left Column */}
+          <div className="md:col-span-4 space-y-6">
+
+            {/* Scan Products Card */}
+            <div className="bg-white editorial-shadow p-6 space-y-5" style={{ borderRadius: '0.25rem' }}>
+              <h3 className="text-[10px] uppercase tracking-[0.2em] text-secondary font-medium">Scan Products</h3>
+
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full py-3 bg-neutral-900 text-white text-xs uppercase tracking-[0.15em] font-medium rounded-none min-h-[44px] hover:bg-neutral-800 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                Upload Label Photo
+              </button>
+              <input
+                id="inventory-upload"
+                name="inventory-upload"
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+
+              {selectedPhotos.length > 0 && (
+                <>
+                  <div className="flex gap-2 flex-wrap">
+                    {selectedPhotos.map((photo, i) => (
+                      <img
+                        key={i}
+                        src={photo}
+                        alt={`Selected photo ${i + 1}`}
+                        className="w-14 h-14 object-cover"
+                        style={{ borderRadius: '0.25rem' }}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { onScan(selectedPhotos); setSelectedPhotos([]); }}
+                    className="w-full py-3 bg-primary text-on-primary text-xs uppercase tracking-[0.15em] font-medium rounded-none min-h-[44px] hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
-                    <div className="w-16 h-16 bg-white rounded-2xl shadow-md border-2 border-white ring-4 ring-pink-50 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-6 transition-all cursor-pointer relative">
-                      {getProductIcon(item.category)}
-                      <div className="absolute -bottom-1 w-10 h-1 bg-black/5 rounded-full blur-[3px]"></div>
-                    </div>
-                    <div className="mt-3 text-center space-y-0.5">
-                       <p className="text-[9px] font-black text-gray-800 uppercase leading-tight truncate w-24 px-1">{item.name}</p>
-                       <p className="text-[7px] text-pink-400 font-bold uppercase tracking-tighter">{item.brand}</p>
-                    </div>
-                  </a>
-                ))
+                    Analyze {selectedPhotos.length} {selectedPhotos.length === 1 ? 'Photo' : 'Photos'}
+                  </button>
+                </>
               )}
             </div>
+
+            {/* Manual Entry Card */}
+            <div className="bg-white editorial-shadow p-6 space-y-5" style={{ borderRadius: '0.25rem' }}>
+              <h3 className="text-[10px] uppercase tracking-[0.2em] text-secondary font-medium">Manual Entry</h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="manual-brand" className="text-[10px] uppercase tracking-[0.2em] text-secondary block mb-1">Brand</label>
+                  <input
+                    id="manual-brand"
+                    value={manualBrand}
+                    onChange={e => setManualBrand(e.target.value)}
+                    placeholder="e.g. Dior"
+                    className="w-full py-2 text-sm text-neutral-900 bg-transparent border-0 border-b border-outline-variant outline-none focus:border-primary transition-colors placeholder:text-neutral-400"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="manual-name" className="text-[10px] uppercase tracking-[0.2em] text-secondary block mb-1">Product Name</label>
+                  <input
+                    id="manual-name"
+                    value={manualName}
+                    onChange={e => setManualName(e.target.value)}
+                    placeholder="e.g. Lip Glow Oil"
+                    className="w-full py-2 text-sm text-neutral-900 bg-transparent border-0 border-b border-outline-variant outline-none focus:border-primary transition-colors placeholder:text-neutral-400"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleManualAdd}
+                disabled={!manualName || !manualBrand}
+                className="w-full py-3 bg-neutral-900 text-white text-xs uppercase tracking-[0.15em] font-medium rounded-none min-h-[44px] hover:bg-neutral-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                Add to Collection
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column — Product Grid */}
+          <div className="md:col-span-8">
+            {currentInventory.length === 0 ? (
+              <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-3">
+                <span className="material-symbols-outlined text-neutral-300" style={{ fontSize: '48px' }}>inventory_2</span>
+                <p className="font-serif text-lg text-neutral-400 italic">Your collection is empty</p>
+                <p className="text-xs text-secondary">Scan product labels or add items manually to get started.</p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {currentInventory.map((product) => (
+                  <div
+                    key={product.id}
+                    className="bg-white editorial-shadow p-5 flex items-start justify-between"
+                    style={{ borderRadius: '0.25rem' }}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] text-secondary uppercase tracking-[0.2em]">{product.brand}</p>
+                      <h4 className="text-sm font-serif text-neutral-900 mt-1 truncate">{product.name}</h4>
+                      <p className="text-xs text-secondary mt-0.5">{product.category}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(product.id)}
+                      className="text-neutral-400 hover:text-red-500 transition-colors min-h-[44px] p-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded flex-shrink-0"
+                      aria-label={`Remove ${product.name}`}
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>delete</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

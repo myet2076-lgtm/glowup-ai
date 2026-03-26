@@ -6,6 +6,7 @@ interface Props {
   onWishlist: () => void;
   onRestart: () => void;
   onHistory: () => void;
+  activePage?: string;
   inventoryCount: number;
   wishlistCount: number;
   masterPhoto: string | null;
@@ -13,7 +14,7 @@ interface Props {
   validateFace?: (photo: string) => Promise<boolean>;
 }
 
-const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, onHistory, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto, validateFace }) => {
+const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, onHistory, activePage, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto, validateFace }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -45,9 +46,9 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
         </button>
 
         <div className="hidden md:flex gap-12 items-center">
-          <button type="button" onClick={onHome} className="text-neutral-900 border-b border-primary pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent border-t-0 border-l-0 border-r-0 cursor-pointer">The AI</button>
-          <button type="button" onClick={onInventory} className="text-neutral-500 hover:text-neutral-800 transition-colors duration-300 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent border-none cursor-pointer">Vanity</button>
-          <button type="button" onClick={onWishlist} className="text-neutral-500 hover:text-neutral-800 transition-colors duration-300 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent border-none cursor-pointer">Wishlist</button>
+          <button type="button" onClick={onHome} className={`pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent cursor-pointer transition-colors duration-300 border-t-0 border-l-0 border-r-0 ${!activePage || activePage === 'landing' || activePage === 'quiz' || activePage === 'celebrity' || activePage === 'inspiration' || activePage === 'results' || activePage === 'face-analysis' || activePage === 'hair-lab' || activePage === 'history' || activePage === 'history-detail' ? 'text-neutral-900 border-b border-primary' : 'text-neutral-500 hover:text-neutral-800 border-b border-transparent'}`}>The AI</button>
+          <button type="button" onClick={onInventory} className={`pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent cursor-pointer transition-colors duration-300 border-t-0 border-l-0 border-r-0 ${activePage === 'inventory' ? 'text-neutral-900 border-b border-primary' : 'text-neutral-500 hover:text-neutral-800 border-b border-transparent'}`}>Vanity</button>
+          <button type="button" onClick={onWishlist} className={`pb-1 font-label text-xs uppercase tracking-[0.2em] min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent cursor-pointer transition-colors duration-300 border-t-0 border-l-0 border-r-0 ${activePage === 'wishlist' ? 'text-neutral-900 border-b border-primary' : 'text-neutral-500 hover:text-neutral-800 border-b border-transparent'}`}>Wishlist</button>
         </div>
 
         <div className="flex items-center gap-6">

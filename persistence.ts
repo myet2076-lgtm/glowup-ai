@@ -1,5 +1,5 @@
 import { get, set, del, keys, entries } from 'idb-keyval';
-import { MakeupAnalysis } from './types';
+import { MakeupAnalysis, Product } from './types';
 
 export interface SavedAnalysis {
   id: string;
@@ -52,4 +52,23 @@ export async function loadProfilePhoto(): Promise<string | null> {
 
 export function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+// --- Inventory Persistence ---
+
+const INVENTORY_PREFIX = 'inventory_';
+
+export async function saveInventoryItem(product: Product & { id: string }): Promise<void> {
+  await set(INVENTORY_PREFIX + product.id, product);
+}
+
+export async function loadAllInventory(): Promise<(Product & { id: string })[]> {
+  const allEntries = await entries();
+  return allEntries
+    .filter(([key]) => (key as string).startsWith(INVENTORY_PREFIX))
+    .map(([, value]) => value as Product & { id: string });
+}
+
+export async function deleteInventoryItem(id: string): Promise<void> {
+  await del(INVENTORY_PREFIX + id);
 }
