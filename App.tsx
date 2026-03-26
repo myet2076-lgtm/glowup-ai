@@ -1,18 +1,43 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { AppState, QuizAnswers, MakeupAnalysis, Product, FaceAnalysisResult } from './types';
-import { 
-  getMakeupFromQuiz, 
-  analyzeCelebrityLookAlike, 
-  analyzeInspirationLook, 
+import {
+  getMakeupFromQuiz,
+  analyzeCelebrityLookAlike,
+  analyzeInspirationLook,
   analyzeInventory,
   generateTryOn,
   analyzeFaceFeatures,
   normalizeProduct,
   generateHairTryOn,
-  validateFaceImage
+  validateFaceImage,
 } from './openaiService';
-import { saveAnalysis, updateAnalysisTryOn, loadAnalysis, loadProfilePhoto, saveProfilePhoto, generateId, SavedAnalysis, loadAllInventory, saveInventoryItem, deleteInventoryItem } from './persistence';
+import {
+  saveAnalysis,
+  updateAnalysisTryOn,
+  loadAnalysis,
+  loadAllAnalyses,
+  deleteAnalysis,
+  loadProfilePhoto,
+  saveProfilePhoto,
+  generateId,
+  SavedAnalysis,
+  loadAllInventory,
+  saveInventoryItem,
+  deleteInventoryItem,
+} from './persistence';
+import {
+  upsertCloudAnalysis,
+  updateCloudTryOn,
+  loadAllCloudAnalyses,
+  loadCloudAnalysis,
+  deleteCloudAnalysis,
+  upsertCloudInventoryItem,
+  loadAllCloudInventory,
+  deleteCloudInventoryItem,
+  upsertCloudProfilePhoto,
+  loadCloudProfilePhoto,
+} from './cloudPersistence';
+import { useAuth } from './auth';
 import HistoryView from './components/HistoryView';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -25,14 +50,19 @@ import FaceAnalysisView from './components/FaceAnalysisView';
 import WishlistView from './components/WishlistView';
 import HairLabView from './components/HairLabView';
 import InspirationLab from './components/InspirationLab';
+import AuthModal from './components/AuthModal';
 
 const App: React.FC = () => {
+  const { user, loading: authLoading, signOut } = useAuth();
+  const isAuthenticated = Boolean(user);
+
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [currentPage, setCurrentPage] = useState<AppState>('landing');
   const [resultSource, setResultSource] = useState<'quiz' | 'celebrity' | 'inspiration' | null>(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState('');
-  
+
   const [analysis, setAnalysis] = useState<MakeupAnalysis | null>(null);
   const [faceAnalysis, setFaceAnalysis] = useState<FaceAnalysisResult | null>(null);
   const [inventory, setInventory] = useState<(Product & { id: string })[]>([]);
@@ -52,7 +82,7 @@ const App: React.FC = () => {
     if (loading) {
       setProgress(0);
       interval = setInterval(() => {
-        setProgress(prev => (prev < 98 ? prev + (Math.random() * 8) : prev));
+        setProgress((prev) => (prev < 98 ? prev + Math.random() * 8 : prev));
       }, 400);
     } else {
       clearInterval(interval);
@@ -60,24 +90,181 @@ const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [loading]);
 
-  // Load profile photo from IndexedDB on mount
   useEffect(() => {
-    loadProfilePhoto().then(photo => {
-      if (photo) setMasterFacePhoto(photo);
-    });
-  }, []);
+    let cancelled = false;
 
-  // Load inventory from IndexedDB on mount
-  useEffect(() => {
-    loadAllInventory().then(items => setInventory(items));
-  }, []);
+    const run = async () => {
+      if (isAuthenticated) {
+        try {
+          const cloudPhoto = await loadCloudProfilePhoto();
+          if (!cancelled && cloudPhoto) {
+            setMasterFacePhoto(cloudPhoto);
+            return;
+          }
+        } catch {
+          // fall through to local
+        }
+      }
 
-  // Persist profile photo when it changes
+      const localPhoto = await loadProfilePhoto();
+      if (!cancelled) {
+        setMasterFacePhoto(localPhoto);
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, user?.id]);
+
   useEffect(() => {
-    if (masterFacePhoto) {
-      saveProfilePhoto(masterFacePhoto);
+    let cancelled = false;
+
+    const run = async () => {
+      if (isAuthenticated) {
+        try {
+          const cloudInventory = await loadAllCloudInventory();
+          if (!cancelled) {
+            setInventory(cloudInventory);
+            return;
+          }
+        } catch {
+          // fall through to local
+        }
+      }
+
+      const localInventory = await loadAllInventory();
+      if (!cancelled) {
+        setInventory(localInventory);
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, user?.id]);
+
+  useEffect(() => {
+    if (!masterFacePhoto) return;
+
+    const persist = async () => {
+      if (isAuthenticated) {
+        try {
+          await upsertCloudProfilePhoto(masterFacePhoto);
+          return;
+        } catch {
+          // fallback to local
+        }
+      }
+      await saveProfilePhoto(masterFacePhoto);
+    };
+
+    persist();
+  }, [masterFacePhoto, isAuthenticated, user?.id]);
+
+  const persistAnalysis = useCallback(
+    async (data: SavedAnalysis) => {
+      if (isAuthenticated) {
+        try {
+          await upsertCloudAnalysis(data);
+          return;
+        } catch {
+          // fallback to local
+        }
+      }
+      await saveAnalysis(data);
+    },
+    [isAuthenticated, user?.id]
+  );
+
+  const persistInventoryItem = useCallback(
+    async (item: Product & { id: string }) => {
+      if (isAuthenticated) {
+        try {
+          await upsertCloudInventoryItem(item);
+          return;
+        } catch {
+          // fallback to local
+        }
+      }
+      await saveInventoryItem(item);
+    },
+    [isAuthenticated, user?.id]
+  );
+
+  const deleteInventoryById = useCallback(
+    async (id: string) => {
+      if (isAuthenticated) {
+        try {
+          await deleteCloudInventoryItem(id);
+          return;
+        } catch {
+          // fallback to local
+        }
+      }
+      await deleteInventoryItem(id);
+    },
+    [isAuthenticated, user?.id]
+  );
+
+  const loadAnalysisById = useCallback(
+    async (id: string): Promise<SavedAnalysis | null> => {
+      if (isAuthenticated) {
+        try {
+          return await loadCloudAnalysis(id);
+        } catch {
+          // fallback to local
+        }
+      }
+      return await loadAnalysis(id);
+    },
+    [isAuthenticated, user?.id]
+  );
+
+  const updateTryOnById = useCallback(
+    async (id: string, image: string) => {
+      if (isAuthenticated) {
+        try {
+          await updateCloudTryOn(id, image);
+          return;
+        } catch {
+          // fallback to local
+        }
+      }
+      await updateAnalysisTryOn(id, image);
+    },
+    [isAuthenticated, user?.id]
+  );
+
+  const loadAnalysesForHistory = useCallback(async (): Promise<SavedAnalysis[]> => {
+    if (isAuthenticated) {
+      try {
+        return await loadAllCloudAnalyses();
+      } catch {
+        // fallback to local
+      }
     }
-  }, [masterFacePhoto]);
+    return await loadAllAnalyses();
+  }, [isAuthenticated, user?.id]);
+
+  const deleteAnalysisForHistory = useCallback(
+    async (id: string) => {
+      if (isAuthenticated) {
+        try {
+          await deleteCloudAnalysis(id);
+          return;
+        } catch {
+          // fallback to local
+        }
+      }
+      await deleteAnalysis(id);
+    },
+    [isAuthenticated, user?.id]
+  );
 
   const handleRestart = () => {
     setAnalysis(null);
@@ -99,19 +286,18 @@ const App: React.FC = () => {
     }
   };
 
-  /** Legacy wrapper that shows global loading + alerts — used by celebrity, face analysis, hair lab */
   const validateFaceWithUI = async (photo: string): Promise<boolean> => {
     setLoading(true);
-    setLoadingMessage("Verifying selfie...");
+    setLoadingMessage('Verifying selfie...');
     try {
       const isValid = await validateFaceImage(photo.split(',')[1]);
       if (!isValid) {
-        alert("Please upload a clear face selfie only!");
+        alert('Please upload a clear face selfie only!');
         return false;
       }
       return true;
-    } catch (err) {
-      alert("Validation failed. Try again with a clear photo.");
+    } catch {
+      alert('Validation failed. Try again with a clear photo.');
       return false;
     } finally {
       setLoading(false);
@@ -124,24 +310,27 @@ const App: React.FC = () => {
       setCurrentPage('face-analysis');
       return;
     }
-    
+
     const isValid = await validateFaceWithUI(activePhoto);
     if (!isValid) return;
 
     setLoading(true);
-    setLoadingMessage("Mapping facial geometry...");
+    setLoadingMessage('Mapping facial geometry...');
     try {
       const result = await analyzeFaceFeatures(activePhoto.split(',')[1]);
       setFaceAnalysis(result);
       setCurrentPage('face-analysis');
-    } catch (err) { alert("Analysis failed."); }
-    finally { setLoading(false); }
+    } catch {
+      alert('Analysis failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const processQuiz = async (answers: QuizAnswers) => {
     setTryOnImage(null);
     setLoading(true);
-    setLoadingMessage("Curating beauty blueprint...");
+    setLoadingMessage('Curating beauty blueprint...');
     try {
       const result = await getMakeupFromQuiz(answers);
       const id = generateId();
@@ -149,7 +338,7 @@ const App: React.FC = () => {
       setAnalysis(result);
       setResultSource('quiz');
       setCurrentPage('results');
-      await saveAnalysis({
+      await persistAnalysis({
         id,
         timestamp: Date.now(),
         source: 'quiz',
@@ -158,8 +347,11 @@ const App: React.FC = () => {
         inspoPhoto: null,
         tryOnImage: null,
       });
-    } catch (err) { alert("Quiz error!"); }
-    finally { setLoading(false); }
+    } catch {
+      alert('Quiz error!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const processCelebrity = async (photo?: string) => {
@@ -174,7 +366,7 @@ const App: React.FC = () => {
 
     setTryOnImage(null);
     setLoading(true);
-    setLoadingMessage("Searching your celebrity twin...");
+    setLoadingMessage('Searching your celebrity twin...');
     try {
       const result = await analyzeCelebrityLookAlike(activePhoto.split(',')[1]);
       const id = generateId();
@@ -182,7 +374,7 @@ const App: React.FC = () => {
       setAnalysis(result);
       setResultSource('celebrity');
       setCurrentPage('results');
-      await saveAnalysis({
+      await persistAnalysis({
         id,
         timestamp: Date.now(),
         source: 'celebrity',
@@ -191,14 +383,17 @@ const App: React.FC = () => {
         inspoPhoto: null,
         tryOnImage: null,
       });
-    } catch (err) { alert("Celebrity search failed!"); }
-    finally { setLoading(false); }
+    } catch {
+      alert('Celebrity search failed!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const processInspiration = async () => {
     const activeFace = localInspoFace || masterFacePhoto;
     if (!activeFace) {
-      alert("Please provide a canvas photo (your selfie) first!");
+      alert('Please provide a canvas photo (your selfie) first!');
       return;
     }
 
@@ -206,14 +401,17 @@ const App: React.FC = () => {
     if (!isValid) return;
 
     setLoading(true);
-    setLoadingMessage("Analyzing inspiration...");
+    setLoadingMessage('Analyzing inspiration...');
     try {
       const result = await analyzeInspirationLook(inspoPhoto, activeFace, inspoText);
       setAnalysis(result);
       setResultSource('inspiration');
       setCurrentPage('results');
-    } catch (err) { alert("Inspiration failed!"); }
-    finally { setLoading(false); }
+    } catch {
+      alert('Inspiration failed!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const processInspirationSubmit = async (
@@ -222,16 +420,15 @@ const App: React.FC = () => {
     newInspoText: string
   ) => {
     setInspoPhoto(newInspoPhoto);
-    // Only set localInspoFace if it's a DIFFERENT photo than master
     if (facePhoto !== masterFacePhoto) {
       setLocalInspoFace(facePhoto);
     } else {
-      setLocalInspoFace(null); // Clear — means "using profile photo"
+      setLocalInspoFace(null);
     }
     setInspoText(newInspoText);
     setTryOnImage(null);
     setLoading(true);
-    setLoadingMessage("Analyzing inspiration...");
+    setLoadingMessage('Analyzing inspiration...');
     try {
       const result = await analyzeInspirationLook(newInspoPhoto, facePhoto, newInspoText);
       const id = generateId();
@@ -239,7 +436,7 @@ const App: React.FC = () => {
       setAnalysis(result);
       setResultSource('inspiration');
       setCurrentPage('results');
-      await saveAnalysis({
+      await persistAnalysis({
         id,
         timestamp: Date.now(),
         source: 'inspiration',
@@ -259,77 +456,105 @@ const App: React.FC = () => {
     const activeFace = localInspoFace || masterFacePhoto;
     if (!activeFace || !analysis) return;
     setLoading(true);
-    setLoadingMessage("AI Makeup Magic...");
+    setLoadingMessage('AI Makeup Magic...');
     try {
       const result = await generateTryOn(activeFace.split(',')[1], `${analysis.styleName}: ${analysis.description}`);
       setTryOnImage(result);
       if (currentAnalysisId) {
-        await updateAnalysisTryOn(currentAnalysisId, result);
+        await updateTryOnById(currentAnalysisId, result);
       }
-    } catch (err) { alert("Try-on failed."); }
-    finally { setLoading(false); }
+    } catch {
+      alert('Try-on failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleHairTryOn = async (style: string, color: string, mode: 'both' | 'keep-style' | 'keep-color') => {
+  const handleHairTryOn = async (
+    style: string,
+    color: string,
+    mode: 'both' | 'keep-style' | 'keep-color'
+  ) => {
     if (!masterFacePhoto) return;
 
     const isValid = await validateFaceWithUI(masterFacePhoto);
     if (!isValid) return;
 
     setLoading(true);
-    setLoadingMessage(mode === 'keep-style' ? `Changing hair color to ${color}...` : mode === 'keep-color' ? `Changing hairstyle to ${style}...` : `Styling hair: ${color} ${style}...`);
+    setLoadingMessage(
+      mode === 'keep-style'
+        ? `Changing hair color to ${color}...`
+        : mode === 'keep-color'
+          ? `Changing hairstyle to ${style}...`
+          : `Styling hair: ${color} ${style}...`
+    );
     try {
       const result = await generateHairTryOn(masterFacePhoto.split(',')[1], style, color, mode);
       setHairResultImage(result);
-    } catch (err) { alert("Hair lab failed."); }
-    finally { setLoading(false); }
+    } catch {
+      alert('Hair lab failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInventoryScan = async (photos: string[]) => {
     if (photos.length === 0) return;
     setLoading(true);
-    setLoadingMessage("Scanning vanity...");
+    setLoadingMessage('Scanning vanity...');
     try {
-      const results = await analyzeInventory(photos.map(p => p.split(',')[1]));
-      const itemsWithIds = results.map(p => ({ ...p, id: generateId() }));
+      const results = await analyzeInventory(photos.map((p) => p.split(',')[1]));
+      const itemsWithIds = results.map((p) => ({ ...p, id: generateId() }));
       for (const item of itemsWithIds) {
-        await saveInventoryItem(item);
+        await persistInventoryItem(item);
       }
-      setInventory(prev => [...prev, ...itemsWithIds]);
-    } catch (err) { alert("Scan failed."); }
-    finally { setLoading(false); }
+      setInventory((prev) => [...prev, ...itemsWithIds]);
+    } catch {
+      alert('Scan failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleManualAdd = async (brand: string, name: string) => {
     setLoading(true);
-    setLoadingMessage("Validating product details...");
+    setLoadingMessage('Validating product details...');
     try {
       const official = await normalizeProduct(brand, name);
       const item = { ...official, category: official.category || 'other', id: generateId() };
-      await saveInventoryItem(item);
-      setInventory(prev => [...prev, item]);
-    } catch (err) {
+      await persistInventoryItem(item);
+      setInventory((prev) => [...prev, item]);
+    } catch {
       const item = { brand, name, category: 'other', id: generateId() };
-      await saveInventoryItem(item);
-      setInventory(prev => [...prev, item]);
+      await persistInventoryItem(item);
+      setInventory((prev) => [...prev, item]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteInventoryItem = async (id: string) => {
-    await deleteInventoryItem(id);
-    setInventory(prev => prev.filter(p => p.id !== id));
+    await deleteInventoryById(id);
+    setInventory((prev) => prev.filter((p) => p.id !== id));
   };
 
   const removeFromWishlist = (idx: number) => {
-    setWishlist(prev => prev.filter((_, i) => i !== idx));
+    setWishlist((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setShowAuthModal(false);
+    } catch {
+      alert('Sign out failed. Please try again.');
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <Header 
-        onHome={handleRestart} 
+      <Header
+        onHome={handleRestart}
         onInventory={() => setCurrentPage('inventory')}
         onWishlist={() => setCurrentPage('wishlist')}
         onHistory={() => setCurrentPage('history')}
@@ -340,8 +565,14 @@ const App: React.FC = () => {
         masterPhoto={masterFacePhoto}
         onSetMasterPhoto={setMasterFacePhoto}
         validateFace={validateFace}
+        authLoading={authLoading}
+        userEmail={user?.email ?? null}
+        onOpenAuthModal={() => setShowAuthModal(true)}
+        onSignOut={handleSignOut}
       />
-      
+
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+
       <main className="flex-grow">
         {loading && (
           <div className="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-8 text-center space-y-6" role="status" aria-live="polite">
@@ -353,10 +584,13 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'landing' && (
-          <Landing 
-            onQuiz={() => setCurrentPage('quiz')} 
-            onCelebrity={() => setCurrentPage('celebrity')} 
-            onInspiration={(hint) => { setInspoEntryHint(hint ?? null); setCurrentPage('inspiration'); }}
+          <Landing
+            onQuiz={() => setCurrentPage('quiz')}
+            onCelebrity={() => setCurrentPage('celebrity')}
+            onInspiration={(hint) => {
+              setInspoEntryHint(hint ?? null);
+              setCurrentPage('inspiration');
+            }}
             onInventory={() => setCurrentPage('inventory')}
             onFaceAnalysis={() => processFaceAnalysis()}
             onHairLab={() => setCurrentPage('hair-lab')}
@@ -364,8 +598,8 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'hair-lab' && (
-          <HairLabView 
-            userPhoto={masterFacePhoto} 
+          <HairLabView
+            userPhoto={masterFacePhoto}
             resultImage={hairResultImage}
             onSetProfile={async (img) => {
               if (img) {
@@ -382,7 +616,7 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'face-analysis' && !faceAnalysis && (
-          <PhotoUpload 
+          <PhotoUpload
             title="Analysis Scan"
             description="Clear face, natural lighting. Accepts JPEG/PNG."
             onUpload={processFaceAnalysis}
@@ -390,15 +624,18 @@ const App: React.FC = () => {
             useProfileOption={!!masterFacePhoto}
             onUseProfile={() => processFaceAnalysis(masterFacePhoto!)}
             onSetAsMaster={async (img) => {
-               const ok = await validateFaceWithUI(img);
-               if (ok) setMasterFacePhoto(img);
+              const ok = await validateFaceWithUI(img);
+              if (ok) setMasterFacePhoto(img);
             }}
             isMasterSet={!!masterFacePhoto}
           />
         )}
 
         {currentPage === 'face-analysis' && faceAnalysis && (
-          <FaceAnalysisView result={faceAnalysis} userPhoto={masterFacePhoto} onBack={() => {setFaceAnalysis(null); setCurrentPage('landing');}} />
+          <FaceAnalysisView result={faceAnalysis} userPhoto={masterFacePhoto} onBack={() => {
+            setFaceAnalysis(null);
+            setCurrentPage('landing');
+          }} />
         )}
 
         {currentPage === 'wishlist' && (
@@ -410,7 +647,7 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'celebrity' && (
-          <PhotoUpload 
+          <PhotoUpload
             title="Twin Scan"
             description="Find your celebrity twin secrets. Use a clear selfie or your profile photo."
             onUpload={processCelebrity}
@@ -418,8 +655,8 @@ const App: React.FC = () => {
             useProfileOption={!!masterFacePhoto}
             onUseProfile={() => processCelebrity(masterFacePhoto!)}
             onSetAsMaster={async (img) => {
-               const ok = await validateFaceWithUI(img);
-               if (ok) setMasterFacePhoto(img);
+              const ok = await validateFaceWithUI(img);
+              if (ok) setMasterFacePhoto(img);
             }}
             isMasterSet={!!masterFacePhoto}
           />
@@ -441,12 +678,12 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'inventory' && (
-          <InventoryManager 
-            currentInventory={inventory} 
-            onScan={handleInventoryScan} 
+          <InventoryManager
+            currentInventory={inventory}
+            onScan={handleInventoryScan}
             onAddManual={handleManualAdd}
             onDelete={handleDeleteInventoryItem}
-            onBack={() => setCurrentPage('landing')} 
+            onBack={() => setCurrentPage('landing')}
           />
         )}
 
@@ -454,12 +691,15 @@ const App: React.FC = () => {
           <HistoryView
             onBack={() => setCurrentPage('landing')}
             onViewDetail={async (id) => {
-              const data = await loadAnalysis(id);
+              const data = await loadAnalysisById(id);
               if (data) {
                 setHistoryDetailData(data);
                 setCurrentPage('history-detail');
               }
             }}
+            loadAnalyses={loadAnalysesForHistory}
+            deleteAnalysisById={deleteAnalysisForHistory}
+            dataScopeKey={user?.id ?? 'guest'}
           />
         )}
 
@@ -480,9 +720,9 @@ const App: React.FC = () => {
         )}
 
         {currentPage === 'results' && analysis && (
-          <ResultsView 
-            analysis={analysis} 
-            inventory={inventory} 
+          <ResultsView
+            analysis={analysis}
+            inventory={inventory}
             userPhoto={localInspoFace || masterFacePhoto}
             inspoPhoto={inspoPhoto}
             onBack={() => {
@@ -492,7 +732,7 @@ const App: React.FC = () => {
             }}
             onRestart={handleRestart}
             onTryOn={handleTryOn}
-            onAddToWishlist={(p) => setWishlist(prev => [...prev, p])}
+            onAddToWishlist={(p) => setWishlist((prev) => [...prev, p])}
             tryOnImage={tryOnImage}
             isCelebrityTwin={resultSource === 'celebrity'}
             onFaceAnalysis={() => processFaceAnalysis()}

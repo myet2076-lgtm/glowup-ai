@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { loadAllAnalyses, deleteAnalysis, SavedAnalysis } from '../persistence';
+import { SavedAnalysis } from '../persistence';
 
 interface HistoryViewProps {
   onBack: () => void;
   onViewDetail: (id: string) => void;
+  loadAnalyses: () => Promise<SavedAnalysis[]>;
+  deleteAnalysisById: (id: string) => Promise<void>;
+  dataScopeKey?: string;
 }
 
 const sourceLabels: Record<string, string> = {
@@ -17,27 +20,27 @@ const formatDate = (ts: number) => {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 };
 
-const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail }) => {
+const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail, loadAnalyses, deleteAnalysisById, dataScopeKey }) => {
   const [analyses, setAnalyses] = useState<SavedAnalysis[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
-    loadAllAnalyses().then((data) => {
+    setLoaded(false);
+    loadAnalyses().then((data) => {
       setAnalyses(data);
       setLoaded(true);
     });
-  }, []);
+  }, [loadAnalyses, dataScopeKey]);
 
   const handleDelete = async (id: string) => {
-    await deleteAnalysis(id);
+    await deleteAnalysisById(id);
     setAnalyses((prev) => prev.filter((a) => a.id !== id));
     setConfirmId(null);
   };
 
   return (
     <div className="motion-safe:animate-fade-in-up max-w-2xl mx-auto px-4 py-8 space-y-8 pt-32">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <button
           type="button"
@@ -47,10 +50,9 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail }) => {
           &larr; Back
         </button>
         <h1 className="font-serif text-3xl text-neutral-900 tracking-tight">Your History</h1>
-        <div className="w-16" /> {/* spacer for centering */}
+        <div className="w-16" />
       </div>
 
-      {/* Content */}
       {loaded && analyses.length === 0 && (
         <div className="text-center py-20 space-y-4">
           <p className="font-serif text-xl text-neutral-400 italic">No saved looks yet.</p>
@@ -65,7 +67,6 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail }) => {
             className="bg-white editorial-shadow flex items-stretch overflow-hidden"
             style={{ borderRadius: '0.25rem' }}
           >
-            {/* Thumbnail */}
             <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
               {item.userPhoto ? (
                 <img
@@ -83,7 +84,6 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail }) => {
               )}
             </div>
 
-            {/* Info */}
             <div className="flex-1 p-4 flex flex-col justify-center min-w-0">
               <h3 className="font-serif text-base text-neutral-900 truncate">
                 {item.analysis.styleName}
@@ -97,7 +97,6 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail }) => {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center gap-2 pr-4 flex-shrink-0">
               <button
                 type="button"

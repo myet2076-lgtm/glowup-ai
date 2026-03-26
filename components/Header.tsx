@@ -13,11 +13,16 @@ interface Props {
   masterPhoto: string | null;
   onSetMasterPhoto: (img: string | null) => void;
   validateFace?: (photo: string) => Promise<boolean>;
+  authLoading?: boolean;
+  userEmail?: string | null;
+  onOpenAuthModal: () => void;
+  onSignOut: () => void;
 }
 
-const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, onHistory, activePage, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto, validateFace }) => {
+const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, onHistory, activePage, inventoryCount, wishlistCount, masterPhoto, onSetMasterPhoto, validateFace, authLoading = false, userEmail, onOpenAuthModal, onSignOut }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +65,51 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
           <button type="button" onClick={onHistory} className="relative p-2 text-neutral-600 hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer" aria-label="History">
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>history</span>
           </button>
+
+          <div
+            className="relative"
+            onMouseLeave={() => setShowAccountMenu(false)}
+          >
+            {userEmail ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowAccountMenu((prev) => !prev)}
+                  className="min-h-[44px] px-3 py-2 text-xs uppercase tracking-[0.12em] bg-surface-container-low text-neutral-800 hover:bg-surface-container-high focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  style={{ borderRadius: '0.25rem' }}
+                  aria-label="Open account menu"
+                >
+                  {userEmail.length > 18 ? `${userEmail.slice(0, 18)}…` : userEmail}
+                </button>
+                {showAccountMenu && (
+                  <div className="absolute top-full right-0 mt-2 bg-white editorial-shadow p-2 min-w-[180px] z-50" style={{ borderRadius: '0.25rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAccountMenu(false);
+                        onSignOut();
+                      }}
+                      className="w-full text-left min-h-[44px] px-3 text-xs uppercase tracking-[0.2em] text-red-500 hover:text-red-600 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded"
+                      aria-label="Sign out"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={onOpenAuthModal}
+                disabled={authLoading}
+                className="min-h-[44px] px-3 py-2 text-xs uppercase tracking-[0.2em] bg-surface-container-low text-neutral-900 hover:bg-surface-container-high focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                style={{ borderRadius: '0.25rem' }}
+                aria-label="Sign in"
+              >
+                Sign in
+              </button>
+            )}
+          </div>
 
           <button type="button" onClick={onInventory} className="md:hidden relative hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer p-2" aria-label="Digital Vanity">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">

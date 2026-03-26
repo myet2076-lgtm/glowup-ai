@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.100.1",
     "idb-keyval": "^6.2.2",
     "openai": "^6.32.0",
     "react": "^19.2.3",
