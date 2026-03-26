@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
     <footer className="bg-white border-t border-neutral-100">
       <div className="flex flex-col md:flex-row justify-between items-start gap-16 w-full max-w-screen-2xl mx-auto py-24 px-8">
         <div className="space-y-6">
-          <div className="text-2xl font-serif text-neutral-900 italic">GlowUp AI</div>
+          <div className="text-2xl font-serif text-neutral-900 italic">Glowa</div>
           <p className="text-neutral-500 max-w-xs text-xs leading-relaxed uppercase tracking-widest">Redefining beauty standards through the lens of personalized artificial intelligence.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-12 w-full md:w-auto">
@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       <div className="max-w-screen-2xl mx-auto px-8 pb-12 flex justify-between items-center border-t border-neutral-50 pt-12">
-        <p className="text-neutral-400 text-[10px] uppercase tracking-widest">&copy; {new Date().getFullYear()} GlowUp AI. All rights reserved.</p>
+        <p className="text-neutral-400 text-[10px] uppercase tracking-widest">&copy; {new Date().getFullYear()} Glowa. All rights reserved.</p>
       </div>
     </footer>
   );

@@ -42,7 +42,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
               Your skin, your style, your AI&#8209;perfected look.
             </h1>
             <p className="text-base text-secondary max-w-md font-sans leading-relaxed">
-              Experience the next generation of beauty. GlowUp AI analyzes your features to curate a personalized aesthetic.
+              Experience the next generation of beauty. Glowa analyzes your features to curate a personalized aesthetic.
             </p>
             <button
               type="button"
