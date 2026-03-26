@@ -34,20 +34,20 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
   return (
     <div className="motion-safe:animate-fade-in-up">
       {/* ── Split Hero with Feature Showcase ── */}
-      <section className="px-8 max-w-screen-2xl mx-auto pt-28 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+      <section className="px-4 md:px-8 max-w-screen-2xl mx-auto pt-20 md:pt-28 pb-6 md:pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
           {/* Left: Hero Text */}
-          <div className="md:col-span-5 space-y-8">
-            <h1 className="text-4xl md:text-6xl font-serif leading-[1.1] text-neutral-900 tracking-tight">
+          <div className="md:col-span-5 space-y-5 md:space-y-8">
+            <h1 className="text-3xl md:text-6xl font-serif leading-[1.1] text-neutral-900 tracking-tight">
               Your skin, your style, your AI&#8209;perfected look.
             </h1>
-            <p className="text-base text-secondary max-w-md font-sans leading-relaxed">
+            <p className="text-sm md:text-base text-secondary max-w-md font-sans leading-relaxed">
               Experience the next generation of beauty. Glowa analyzes your features to curate a personalized aesthetic.
             </p>
             <button
               type="button"
               onClick={() => onInspiration('upload')}
-              className="bg-primary text-white px-10 py-5 rounded-none font-label uppercase tracking-[0.2em] text-xs hover:opacity-90 transition-all duration-300 shadow-xl shadow-primary/10 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              className="bg-primary text-white px-8 md:px-10 py-4 md:py-5 rounded-none font-label uppercase tracking-[0.2em] text-xs hover:opacity-90 transition-all duration-300 shadow-xl shadow-primary/10 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 w-full sm:w-auto"
             >
               Upload a look to start
             </button>
@@ -70,8 +70,8 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
               </div>
             </button>
 
-            {/* Secondary: 2x2 grid of compact cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* Secondary: compact cards */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
               <CompactCard title="Face Analysis" label="Know Your Features" image={FACE_IMAGE} onClick={onFaceAnalysis} />
               <CompactCard title="Celebrity Twin" label="Find Your Match" image={CELEB_IMAGE} onClick={onCelebrity} />
               <CompactCard title="Hair Lab" label="Try New Styles" image={HAIR_IMAGE} onClick={onHairLab} />
