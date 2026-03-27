@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom/client';
 import './app.css';
 import App from './App';
 import { AuthProvider } from './auth';
+import { initAnalytics } from './analytics';
+
+initAnalytics();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

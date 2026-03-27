@@ -51,6 +51,7 @@ import WishlistView from './components/WishlistView';
 import HairLabView from './components/HairLabView';
 import InspirationLab from './components/InspirationLab';
 import AuthModal from './components/AuthModal';
+import { trackPageView, trackEvent, identifyUser, resetUser } from './analytics';
 
 const App: React.FC = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -266,6 +267,21 @@ const App: React.FC = () => {
     [isAuthenticated, user?.id]
   );
 
+  // ── Analytics ──
+  // Track page views
+  useEffect(() => {
+    trackPageView(currentPage);
+  }, [currentPage]);
+
+  // Identify user on auth
+  useEffect(() => {
+    if (user) {
+      identifyUser(user.id, user.email || undefined);
+    } else if (!authLoading) {
+      resetUser();
+    }
+  }, [user, authLoading]);
+
   const handleRestart = () => {
     setAnalysis(null);
     setFaceAnalysis(null);
@@ -318,6 +334,7 @@ const App: React.FC = () => {
     setLoadingMessage('Mapping facial geometry...');
     try {
       const result = await analyzeFaceFeatures(activePhoto.split(',')[1]);
+      trackEvent('analysis_completed', { source: 'face-analysis' });
       setFaceAnalysis(result);
       setCurrentPage('face-analysis');
     } catch {
@@ -333,6 +350,7 @@ const App: React.FC = () => {
     setLoadingMessage('Curating beauty blueprint...');
     try {
       const result = await getMakeupFromQuiz(answers);
+      trackEvent('analysis_completed', { source: 'quiz', style: result.styleName });
       const id = generateId();
       setCurrentAnalysisId(id);
       setAnalysis(result);
@@ -369,6 +387,7 @@ const App: React.FC = () => {
     setLoadingMessage('Searching your celebrity twin...');
     try {
       const result = await analyzeCelebrityLookAlike(activePhoto.split(',')[1]);
+      trackEvent('analysis_completed', { source: 'celebrity', celebrity: result.celebrityMatch });
       const id = generateId();
       setCurrentAnalysisId(id);
       setAnalysis(result);
@@ -431,6 +450,7 @@ const App: React.FC = () => {
     setLoadingMessage('Analyzing inspiration...');
     try {
       const result = await analyzeInspirationLook(newInspoPhoto, facePhoto, newInspoText);
+      trackEvent('analysis_completed', { source: 'inspiration', style: result.styleName });
       const id = generateId();
       setCurrentAnalysisId(id);
       setAnalysis(result);
@@ -459,6 +479,7 @@ const App: React.FC = () => {
     setLoadingMessage('AI Makeup Magic...');
     try {
       const result = await generateTryOn(activeFace.split(',')[1], `${analysis.styleName}: ${analysis.description}`);
+      trackEvent('tryon_generated', { style: analysis.styleName });
       setTryOnImage(result);
       if (currentAnalysisId) {
         await updateTryOnById(currentAnalysisId, result);
@@ -490,6 +511,7 @@ const App: React.FC = () => {
     );
     try {
       const result = await generateHairTryOn(masterFacePhoto.split(',')[1], style, color, mode);
+      trackEvent('hair_tryon_generated', { style, color, mode });
       setHairResultImage(result);
     } catch {
       alert('Hair lab failed.');
@@ -504,6 +526,7 @@ const App: React.FC = () => {
     setLoadingMessage('Scanning vanity...');
     try {
       const results = await analyzeInventory(photos.map((p) => p.split(',')[1]));
+      trackEvent('product_scanned', { count: results.length });
       const itemsWithIds = results.map((p) => ({ ...p, id: generateId() }));
       for (const item of itemsWithIds) {
         await persistInventoryItem(item);
@@ -544,6 +567,7 @@ const App: React.FC = () => {
 
   const handleSignOut = async () => {
     try {
+      trackEvent('user_signed_out');
       await signOut();
       setShowAuthModal(false);
     } catch {
