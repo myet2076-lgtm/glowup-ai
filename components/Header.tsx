@@ -52,8 +52,7 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
       <div className="flex justify-between items-center w-full px-4 md:px-8 py-3 md:py-6 max-w-screen-2xl mx-auto">
         {/* Logo */}
         <button type="button" onClick={onHome} className="cursor-pointer min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-transparent border-none p-0 flex items-center gap-2 shrink-0" aria-label="Go to home">
-          <img src={glowaLogo} alt="Glowa logo" className="w-7 h-7 md:w-8 md:h-8 object-cover" style={{ borderRadius: '0.35rem' }} />
-          <span className="hidden sm:inline text-2xl font-serif italic text-neutral-900">Glowa</span>
+          <img src={glowaLogo} alt="Glowa" className="h-7 md:h-9 w-auto object-contain" />
         </button>
 
         {/* Desktop Nav Tabs */}
