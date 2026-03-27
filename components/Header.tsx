@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import glowaLogo from '../assets/glowa-logo.jpg';
+import glowaLogo from '../assets/glowa-logo.png';
 
 interface Props {
   onHome: () => void;
