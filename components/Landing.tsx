@@ -10,10 +10,10 @@ interface Props {
 }
 
 import cardInspiration from '../assets/card-inspiration.jpg';
-import cardFaceAnalysis from '../assets/card-face-analysis.png';
-import cardCelebrityTwin from '../assets/card-celebrity-twin.png';
-import cardHairLab from '../assets/card-hair-lab.png';
-import cardStyleQuiz from '../assets/card-style-quiz.png';
+import cardFaceAnalysis from '../assets/card-face-analysis.jpg';
+import cardCelebrityTwin from '../assets/card-celebrity-twin.jpg';
+import cardHairLab from '../assets/card-hair-lab.jpg';
+import cardStyleQuiz from '../assets/card-style-quiz.jpg';
 
 const INSPO_IMAGE = cardInspiration;
 const FACE_IMAGE = cardFaceAnalysis;
