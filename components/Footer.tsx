@@ -46,7 +46,7 @@ You can:
 
 ## 6. Contact
 
-For privacy inquiries, email us at **hello@glowa.ai**
+For privacy inquiries, email us at **support@glowa.ai**
 `;
 
 const TERMS_CONTENT = `
@@ -96,7 +96,7 @@ We may update these terms at any time. Continued use after changes constitutes a
 
 ## 8. Contact
 
-Questions about these terms? Email us at **hello@glowa.ai**
+Questions about these terms? Email us at **support@glowa.ai**
 `;
 
 const FAQ_CONTENT = `
@@ -150,7 +150,7 @@ No. Your photos and data are never shared. See our Privacy Policy for details on
 
 ## Contact
 
-**Have more questions?** Email us at **hello@glowa.ai**
+**Have more questions?** Email us at **support@glowa.ai**
 `;
 
 const ModalOverlay: React.FC<{ title: string; content: string; onClose: () => void }> = ({ title, content, onClose }) => (
@@ -218,7 +218,7 @@ const Footer: React.FC = () => {
             <div className="space-y-6">
               <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-neutral-900 font-bold">Support</h5>
               <ul className="space-y-3">
-                <li><a href="mailto:kevinliub@gmail.com" className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer no-underline">Contact</a></li>
+                <li><a href="mailto:support@glowa.ai" className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer no-underline">Contact</a></li>
                 <li><button type="button" onClick={() => setModal('faq')} className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer bg-transparent border-none p-0">FAQ</button></li>
               </ul>
             </div>
