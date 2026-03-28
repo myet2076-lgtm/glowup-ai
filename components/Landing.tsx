@@ -9,7 +9,7 @@ interface Props {
   onHairLab: () => void;
 }
 
-import cardInspiration from '../assets/card-inspiration.png';
+import cardInspiration from '../assets/card-inspiration.jpg';
 import cardFaceAnalysis from '../assets/card-face-analysis.png';
 import cardCelebrityTwin from '../assets/card-celebrity-twin.png';
 import cardHairLab from '../assets/card-hair-lab.png';
