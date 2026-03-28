@@ -8,13 +8,12 @@ const Footer: React.FC = () => {
           <div className="text-3xl text-neutral-900" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.04em' }}>GLOWA</div>
           <p className="text-neutral-500 max-w-xs text-xs leading-relaxed uppercase tracking-widest">Redefining beauty standards through the lens of personalized artificial intelligence.</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-12 w-full md:w-auto">
+        <div className="grid grid-cols-2 gap-12 w-full md:w-auto">
           <div className="space-y-6">
             <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-neutral-900 font-bold">Legal</h5>
             <ul className="space-y-3">
               <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Privacy</span></li>
               <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Terms</span></li>
-
             </ul>
           </div>
           <div className="space-y-6">
@@ -22,14 +21,6 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Contact</span></li>
               <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">FAQ</span></li>
-            </ul>
-          </div>
-          <div className="space-y-6">
-            <h5 className="font-label text-[10px] uppercase tracking-[0.2em] text-neutral-900 font-bold">Social</h5>
-            <ul className="space-y-3">
-              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Instagram</span></li>
-              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">TikTok</span></li>
-              <li><span className="text-neutral-400 hover:text-primary text-xs transition-all tracking-wider cursor-pointer">Pinterest</span></li>
             </ul>
           </div>
         </div>
