@@ -9,11 +9,17 @@ interface Props {
   onHairLab: () => void;
 }
 
-const INSPO_IMAGE = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCH9cc-d093BTdpCcpV60Mj4YlO0qm6vpDIoXL_HXLFLYotBvM8vj_MJJKkll1OjAF65Zrnx2B_EYf_FdNFanXE-tRg9NGQr-FiSru6p7zyjpwKHtzKllhifQORxEsQF0VahCTzP9-g0r2ueh1l3KD05S7YtxaXCBtgVPynP7sRotVntrjHlfVDh3tm3iP7jEHL0qZM75lXQQ-Sez8hTngdKrAPu6hCsVcf0Pq8zuLcLM1cf6zjvyyTSGmMrJsnUrUjsY--6pAaJgSJ';
-const FACE_IMAGE = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDYKJpoIqwV0jDchtocA664_-3q-9X9L6gWDJVOGjFdURGVJPxPoOSbtzgvEHWHCUzJA2JlTQO1KmbtrplnOluro80iAy4M4jEKrc6itF82e1PlTVC4u5h4-l2SVR8riTXK3u5myqQTdF3130GlfjGvlJUQ5dZNkZysPFpSIa0hnYBIn7kqzb608kN9a0zE3qvSnuHqa2REpLkNyj19X1pGoVlWbFUgk1uglrY2LQD4BMLyjrN1YaxQr6TYGuDcoZYdI2U04zHNbLf2';
-const CELEB_IMAGE = 'https://lh3.googleusercontent.com/aida-public/AB6AXuD06EvZZNzKxos1R0yh7ox9WJ7dWm9dwaQSFzLIQMO_2S1RmnUItHti7_xF7Q54GLz8itwZAOdfZbfdrQ_zFWlmC8NhorTpaChncyEIDMbJOrLNFuj3y19fcN5l5IwWW4UXPDcr2hWrXrafqkX6eWKPsIMekpfNRM7j22unB3sYNNfFiBZFKUd9mi7IKTlmi2dTAe6Y_J06R-WBinM-fHqU8kQbOct7GJ97fkESu45PoqbkigJU1A79u1dRpE6MUUO3DkpIvNz_ZTL6';
-const HAIR_IMAGE = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAv4n0npcywEleQ-co_rNkgg4AB7ia9aJAUEwiCF2G2KPQF1Q_MhL2PtgaYmXmVpcqn93DnV2y_BHHDLheemOa3rRgEsOgAkq5vBOugzX6qBPZQa5qV5R1xIAnOBhoaHgbzvGPohhaljosIXB0ABRUvMkeMLCQF9JVh2XMiXYJzVDmhMtGVZAegv7t6_zimLYBa9FoJmPNPme5YUbxA3XqZhXBjU_j913KQPSIJgDBicyu4kpW504-ctWRqFswXzMHUtq8UdcSijXtN';
-const QUIZ_IMAGE = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDr40MZ8-GJWY4CbiHOCKTSTcTsKnVrKHCHcoRSUscfVwxGMK-emL1wDQwHzSp7aThQhZcs-elh397KeG89Eyn9qtOHoHCsGvJuN19JMRxfpV7ZKdvEPH8I8pObFsnjXn5EijUhuU1o0Cix8cABZkxVITJ6rrEoPxS1n6mRYWFbRqnITguW27Lwr8afZwh4BlEk3yn4mU1La1ePjmq8QvLDtu3a2WUeyxnLalLSnScKBxxJgtXtNtiwUR5seXQpixRqSRLZTR-uTssf';
+import cardInspiration from '../assets/card-inspiration.jpg';
+import cardFaceAnalysis from '../assets/card-face-analysis.jpg';
+import cardCelebrityTwin from '../assets/card-celebrity-twin.jpg';
+import cardHairLab from '../assets/card-hair-lab.jpg';
+import cardStyleQuiz from '../assets/card-style-quiz.jpg';
+
+const INSPO_IMAGE = cardInspiration;
+const FACE_IMAGE = cardFaceAnalysis;
+const CELEB_IMAGE = cardCelebrityTwin;
+const HAIR_IMAGE = cardHairLab;
+const QUIZ_IMAGE = cardStyleQuiz;
 
 const CompactCard = ({ title, label, image, onClick }: { title: string; label: string; image: string; onClick: () => void }) => (
   <button
