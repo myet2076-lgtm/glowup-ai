@@ -64,8 +64,8 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 md:gap-6">
-          {/* History */}
-          <button type="button" onClick={onHistory} className="relative p-1.5 md:p-2 text-neutral-600 hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer" aria-label="History">
+          {/* History — hidden on small screens to reduce clutter */}
+          <button type="button" onClick={onHistory} className="hidden sm:flex relative p-1.5 md:p-2 text-neutral-600 hover:text-primary transition-colors duration-300 min-h-[44px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl bg-transparent border-none cursor-pointer items-center" aria-label="History">
             <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>history</span>
           </button>
 
@@ -124,9 +124,9 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
             {wishlistCount > 0 && <span className="absolute top-0 right-0 bg-primary text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold border-2 border-white">{wishlistCount}</span>}
           </button>
 
-          {/* Profile Photo — hide empty state when logged in to reduce clutter */}
+          {/* Profile Photo — hide empty state on mobile or when logged in */}
           <div
-            className={`relative ${!masterPhoto && userEmail ? 'hidden' : ''}`}
+            className={`relative ${!masterPhoto ? 'hidden sm:block' : ''}`}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
             onFocus={() => setShowTooltip(true)}
