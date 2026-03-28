@@ -25,7 +25,7 @@ const CompactCard = ({ title, label, image, onClick }: { title: string; label: s
   <button
     type="button"
     onClick={onClick}
-    className="relative aspect-square overflow-hidden editorial-shadow group text-left focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    className="relative aspect-square overflow-hidden editorial-shadow group text-left focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 bg-neutral-900"
     style={{ borderRadius: '0.25rem' }}
   >
     <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
