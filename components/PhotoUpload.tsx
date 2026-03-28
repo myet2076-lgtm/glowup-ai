@@ -135,7 +135,7 @@ const PhotoUpload: React.FC<Props> = ({
             >
               <div className="w-20 h-20 bg-surface-container-high rounded-full flex items-center justify-center text-4xl mx-auto text-neutral-400 group-hover:scale-110 transition-transform duration-300">📷</div>
               <div>
-                <h3 className="font-serif text-2xl text-neutral-900">{title}</h3>
+                <h3 className="text-2xl text-neutral-900">{title}</h3>
                 <p className="text-secondary text-xs mt-2 max-w-xs mx-auto leading-relaxed">{description}</p>
                 <p className="text-[10px] text-secondary mt-1 uppercase font-label tracking-[0.2em]">Accepts: JPEG, PNG</p>
               </div>

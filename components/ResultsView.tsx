@@ -113,7 +113,7 @@ const ResultsView: React.FC<Props> = ({
           </button>
 
           <div className="text-center flex-1 min-w-0">
-            <h1 className="font-serif text-3xl sm:text-4xl text-neutral-900 tracking-tight truncate">
+            <h1 className="text-3xl sm:text-4xl text-neutral-900 tracking-tight truncate">
               {analysis.styleName}
             </h1>
             {isCelebrityTwin && analysis.celebrityMatch && (
@@ -158,7 +158,7 @@ const ResultsView: React.FC<Props> = ({
       {isCelebrityTwin && analysis.celebrityMatch && (
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="font-serif text-2xl text-neutral-900 tracking-[-0.02em]">Your Celebrity Twin</h2>
+            <h2 className="text-2xl text-neutral-900 tracking-[-0.02em]">Your Celebrity Twin</h2>
             <span className="text-[10px] text-secondary uppercase tracking-[0.2em]">AI Match</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -175,7 +175,7 @@ const ResultsView: React.FC<Props> = ({
               className="relative aspect-[3/4] bg-surface-container-low overflow-hidden flex flex-col items-center justify-center p-8 text-center group hover:bg-surface-container-high transition-all duration-300"
               style={{ borderRadius: '0.25rem' }}
             >
-              <p className="font-serif italic text-2xl text-neutral-900 mb-3">{analysis.celebrityMatch}</p>
+              <p className="italic text-2xl text-neutral-900 mb-3">{analysis.celebrityMatch}</p>
               <p className="text-[10px] text-secondary uppercase tracking-[0.2em] group-hover:text-primary transition-colors duration-300">Click to see photos →</p>
             </a>
           </div>
@@ -243,11 +243,11 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Tutorial Steps ── */}
       {analysis.tutorialSteps.length > 0 && (
         <section className="space-y-6">
-          <h2 className="font-serif text-2xl text-neutral-900 tracking-tight">Step-by-Step Tutorial</h2>
+          <h2 className="text-2xl text-neutral-900 tracking-tight">Step-by-Step Tutorial</h2>
           <div className="space-y-8">
             {analysis.tutorialSteps.map((step, idx) => (
               <div key={idx} className="flex gap-4">
-                <span className="font-serif text-2xl text-neutral-200 font-light flex-shrink-0 w-8 text-right">
+                <span className="text-2xl text-neutral-200 font-light flex-shrink-0 w-8 text-right">
                   {idx + 1}
                 </span>
                 <div className="space-y-2 flex-1">
@@ -264,7 +264,7 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Product Recommendations ── */}
       {analysis.recommendedProducts.length > 0 && (
         <section className="space-y-6">
-          <h2 className="font-serif text-2xl text-neutral-900 tracking-tight">Recommended Products</h2>
+          <h2 className="text-2xl text-neutral-900 tracking-tight">Recommended Products</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {analysis.recommendedProducts.map((product, i) => {
               const match = getInventoryMatch(product.name);
@@ -299,7 +299,7 @@ const ResultsView: React.FC<Props> = ({
       {/* ── Tutorial Links ── */}
       {(analysis.tutorialLinks.length > 0 || analysis.tikTokSearchQuery) && (
         <section className="space-y-6">
-          <h2 className="font-serif text-2xl text-neutral-900 tracking-tight">Learn More</h2>
+          <h2 className="text-2xl text-neutral-900 tracking-tight">Learn More</h2>
           <div className="grid gap-3">
             {analysis.tutorialLinks.map((link, i) => (
               <a

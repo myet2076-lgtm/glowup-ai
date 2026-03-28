@@ -120,7 +120,7 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
         <p className="text-[10px] uppercase tracking-[0.2em] text-secondary font-label mb-8">
           Inspiration Lab
         </p>
-        <h1 className="font-serif text-4xl sm:text-5xl text-neutral-900 leading-[1.08] tracking-tight">
+        <h1 className="text-4xl sm:text-5xl text-neutral-900 leading-[1.08] tracking-tight">
           Show us the vibe.<br />
           <span className="italic text-neutral-600">We&rsquo;ll decode it.</span>
         </h1>
@@ -133,8 +133,8 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
       {/* Step 01 — Your Inspiration */}
       <div className="mb-12">
         <div className="flex items-baseline gap-4 mb-6">
-          <span className="font-serif text-3xl text-neutral-200">01</span>
-          <span className="font-serif text-xl text-neutral-900">Your inspiration</span>
+          <span className="text-3xl text-neutral-200">01</span>
+          <span className="text-xl text-neutral-900">Your inspiration</span>
         </div>
         <div className="bg-white editorial-shadow p-6 sm:p-8 space-y-6" style={{ borderRadius: '0.25rem' }}>
           <input
@@ -212,8 +212,8 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
       {/* Step 02 — Your Selfie */}
       <div className="mb-12">
         <div className="flex items-baseline gap-4 mb-6">
-          <span className="font-serif text-3xl text-neutral-200">02</span>
-          <span className="font-serif text-xl text-neutral-900">Your selfie</span>
+          <span className="text-3xl text-neutral-200">02</span>
+          <span className="text-xl text-neutral-900">Your selfie</span>
         </div>
         <div className="bg-white editorial-shadow p-6 sm:p-8" style={{ borderRadius: '0.25rem' }}>
           {/* Case A: Using master profile photo */}

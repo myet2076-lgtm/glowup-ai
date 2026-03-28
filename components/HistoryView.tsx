@@ -49,13 +49,13 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail, loadAna
         >
           &larr; Back
         </button>
-        <h1 className="font-serif text-3xl text-neutral-900 tracking-tight">Your History</h1>
+        <h1 className="text-3xl text-neutral-900 tracking-tight">Your History</h1>
         <div className="w-16" />
       </div>
 
       {loaded && analyses.length === 0 && (
         <div className="text-center py-20 space-y-4">
-          <p className="font-serif text-xl text-neutral-400 italic">No saved looks yet.</p>
+          <p className="text-xl text-neutral-400 italic">No saved looks yet.</p>
           <p className="text-sm text-secondary">Start creating and your looks will appear here!</p>
         </div>
       )}
@@ -85,7 +85,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ onBack, onViewDetail, loadAna
             </div>
 
             <div className="flex-1 p-4 flex flex-col justify-center min-w-0">
-              <h3 className="font-serif text-base text-neutral-900 truncate">
+              <h3 className="text-base text-neutral-900 truncate">
                 {item.analysis.styleName}
               </h3>
               <div className="flex items-center gap-2 mt-1">

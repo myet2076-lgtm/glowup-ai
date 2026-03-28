@@ -33,7 +33,7 @@ const HairLabView: React.FC<Props> = ({ userPhoto, resultImage, onSetProfile, on
           <span className="material-symbols-outlined align-middle" style={{ fontSize: '20px' }}>arrow_back</span>
           <span className="ml-1 align-middle">Back</span>
         </button>
-        <h2 className="font-serif text-3xl text-neutral-900 tracking-tight">The Hair Lab</h2>
+        <h2 className="text-3xl text-neutral-900 tracking-tight">The Hair Lab</h2>
         <button type="button" onClick={onRestart} className="text-xs text-secondary hover:text-neutral-900 transition-colors min-h-[44px] px-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded">Restart</button>
       </div>
 

@@ -31,7 +31,7 @@ const CompactCard = ({ title, label, image, onClick }: { title: string; label: s
     <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
     <div className="absolute bottom-0 left-0 p-4 bg-gradient-to-t from-black/60 to-transparent w-full">
       <p className="text-[10px] text-white/60 uppercase tracking-[0.2em]">{label}</p>
-      <h4 className="text-sm font-serif text-white">{title}</h4>
+      <h4 className="text-sm text-white" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.04em' }}>{title}</h4>
     </div>
   </button>
 );
@@ -44,7 +44,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
           {/* Left: Hero Text */}
           <div className="md:col-span-5 space-y-5 md:space-y-8">
-            <h1 className="text-3xl md:text-6xl font-serif leading-[1.1] text-neutral-900 tracking-tight">
+            <h1 className="text-3xl md:text-6xl leading-[1.05] text-neutral-900" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.02em' }}>
               Your skin, your style, your AI&#8209;perfected look.
             </h1>
             <p className="text-sm md:text-base text-secondary max-w-md font-sans leading-relaxed">
@@ -71,7 +71,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
               <img src={INSPO_IMAGE} alt="Recreate any look" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/50 to-transparent w-full">
                 <p className="text-[10px] text-white/70 uppercase tracking-[0.2em] mb-1">Primary Feature</p>
-                <h3 className="text-xl font-serif text-white">Inspiration Lab</h3>
+                <h3 className="text-xl text-white" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.04em' }}>Inspiration Lab</h3>
                 <p className="text-xs text-white/80 mt-1">Upload any look — AI adapts it to your face</p>
               </div>
             </button>

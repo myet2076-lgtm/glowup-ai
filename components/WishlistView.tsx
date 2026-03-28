@@ -20,7 +20,7 @@ const WishlistView: React.FC<Props> = ({ wishlist, onRemove, onBack }) => {
           <span className="material-symbols-outlined align-middle" style={{ fontSize: '20px' }}>arrow_back</span>
           <span className="ml-1 align-middle">Back</span>
         </button>
-        <h2 className="font-serif text-3xl text-neutral-900 tracking-tight">Your Wishlist</h2>
+        <h2 className="text-3xl text-neutral-900 tracking-tight">Your Wishlist</h2>
         <div className="w-20" aria-hidden="true" />
       </div>
 
@@ -28,7 +28,7 @@ const WishlistView: React.FC<Props> = ({ wishlist, onRemove, onBack }) => {
         {wishlist.length === 0 ? (
           <div className="col-span-full py-20 text-center space-y-3 bg-white editorial-shadow" style={{ borderRadius: '0.25rem' }}>
             <span className="material-symbols-outlined text-neutral-300" style={{ fontSize: '48px' }}>shopping_bag</span>
-            <p className="font-serif text-lg text-neutral-400 italic">Your wishlist is empty</p>
+            <p className="text-lg text-neutral-400 italic">Your wishlist is empty</p>
             <p className="text-xs text-secondary">Add products from your AI results to compare and shop later.</p>
           </div>
         ) : (
@@ -46,7 +46,7 @@ const WishlistView: React.FC<Props> = ({ wishlist, onRemove, onBack }) => {
 
               <div className="pr-10">
                 <p className="text-[10px] text-secondary uppercase tracking-[0.2em]">{item.brand || 'Brand'}</p>
-                <h4 className="font-serif text-neutral-900 text-lg mt-1 leading-tight">{item.name}</h4>
+                <h4 className="text-neutral-900 text-lg mt-1 leading-tight">{item.name}</h4>
                 <p className="text-xs text-secondary mt-1 line-clamp-2">{item.description || 'Saved from your Glow analysis.'}</p>
               </div>
 

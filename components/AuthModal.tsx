@@ -67,7 +67,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     >
       <div className="w-full max-w-md bg-white editorial-shadow p-6 space-y-5" style={{ borderRadius: '0.35rem' }}>
         <div className="flex items-center justify-between gap-4">
-          <h2 className="font-serif text-2xl text-neutral-900 italic">Your Account</h2>
+          <h2 className="text-2xl text-neutral-900 italic">Your Account</h2>
           <button
             type="button"
             onClick={onClose}

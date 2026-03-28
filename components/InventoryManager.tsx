@@ -51,7 +51,7 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
             <span className="material-symbols-outlined align-middle" style={{ fontSize: '20px' }}>arrow_back</span>
             <span className="ml-1 align-middle">Back</span>
           </button>
-          <h2 className="font-serif text-3xl text-neutral-900 tracking-tight">Your Collection</h2>
+          <h2 className="text-3xl text-neutral-900 tracking-tight">Your Collection</h2>
           <div className="w-20" aria-hidden="true"></div>
         </div>
 
@@ -153,7 +153,7 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
             {currentInventory.length === 0 ? (
               <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-3">
                 <span className="material-symbols-outlined text-neutral-300" style={{ fontSize: '48px' }}>inventory_2</span>
-                <p className="font-serif text-lg text-neutral-400 italic">Your collection is empty</p>
+                <p className="text-lg text-neutral-400 italic">Your collection is empty</p>
                 <p className="text-xs text-secondary">Scan product labels or add items manually to get started.</p>
               </div>
             ) : (
@@ -166,7 +166,7 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-[10px] text-secondary uppercase tracking-[0.2em]">{product.brand}</p>
-                      <h4 className="text-sm font-serif text-neutral-900 mt-1 truncate">{product.name}</h4>
+                      <h4 className="text-sm text-neutral-900 mt-1 truncate">{product.name}</h4>
                       <p className="text-xs text-secondary mt-0.5">{product.category}</p>
                     </div>
                     <button

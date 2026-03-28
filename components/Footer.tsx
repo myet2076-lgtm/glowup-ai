@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
     <footer className="bg-white border-t border-neutral-100">
       <div className="flex flex-col md:flex-row justify-between items-start gap-16 w-full max-w-screen-2xl mx-auto py-24 px-8">
         <div className="space-y-6">
-          <div className="text-2xl font-serif text-neutral-900 italic">Glowa</div>
+          <div className="text-3xl text-neutral-900" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.04em' }}>GLOWA</div>
           <p className="text-neutral-500 max-w-xs text-xs leading-relaxed uppercase tracking-widest">Redefining beauty standards through the lens of personalized artificial intelligence.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-12 w-full md:w-auto">
