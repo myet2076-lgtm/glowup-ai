@@ -29,7 +29,7 @@ const CompactCard = ({ title, label, image, onClick }: { title: string; label: s
     style={{ borderRadius: '0.25rem' }}
   >
     <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-    <div className="absolute inset-0 bg-pink-300/25 backdrop-blur-[2px]" />
+    <div className="absolute inset-0 bg-pink-200/12 backdrop-blur-[1px]" />
     <div className="absolute bottom-0 left-0 p-4 bg-gradient-to-t from-pink-900/50 to-transparent w-full">
       <p className="text-[10px] text-white/60 uppercase tracking-[0.2em]">{label}</p>
       <h4 className="text-sm text-white" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.04em' }}>{title}</h4>
@@ -70,7 +70,7 @@ const Landing: React.FC<Props> = ({ onQuiz, onCelebrity, onInspiration, onFaceAn
               style={{ borderRadius: '0.25rem' }}
             >
               <img src={INSPO_IMAGE} alt="Recreate any look" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-pink-300/25 backdrop-blur-[2px]" />
+              <div className="absolute inset-0 bg-pink-200/12 backdrop-blur-[1px]" />
               <div className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-pink-900/50 to-transparent w-full">
                 <p className="text-[10px] text-white/70 uppercase tracking-[0.2em] mb-1">Primary Feature</p>
                 <h3 className="text-xl text-white" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '0.04em' }}>Inspiration Lab</h3>
