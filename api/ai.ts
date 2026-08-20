@@ -377,7 +377,7 @@ async function handleAction(client: OpenAI, body: JsonObject): Promise<unknown> 
         : mode === 'keep-color'
           ? `Keep the hair color and change only the hairstyle to ${style}.`
           : `Change the hair to ${color} ${style}.`;
-      prompt = `${instruction} Preserve the same person, face, skin, expression, background, lighting, clothing, and framing. Modify only hair.`;
+      prompt = `${instruction} This is a localized hair edit, not a portrait regeneration or beauty makeover. Preserve the original image composition and keep the person's identity, face shape, facial landmarks, eyes, eyebrows, nose, lips, jawline, ears, expression, skin tone and texture, facial hair, background, lighting, clothing, and camera framing unchanged. Do not add makeup, retouch skin, beautify the face, or alter any feature below the natural hairline. Modify only the hair.`;
     }
 
     const response = await client.images.edit({
@@ -385,7 +385,7 @@ async function handleAction(client: OpenAI, body: JsonObject): Promise<unknown> 
       image: imageFile(faceImage),
       prompt,
       input_fidelity: 'high',
-      size: '1024x1024',
+      size: 'auto',
       quality: 'high',
     });
     const output = response.data?.[0];
