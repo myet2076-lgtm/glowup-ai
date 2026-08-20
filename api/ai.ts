@@ -364,7 +364,7 @@ async function handleAction(client: OpenAI, body: JsonObject): Promise<unknown> 
     let prompt: string;
     if (action === 'generateTryOn') {
       const lookDescription = text(body.lookDescription, 'lookDescription', 1200);
-      prompt = `Edit the original photo by adding only a realistic cosmetic layer: ${lookDescription}. Preserve the same person, facial geometry, skin tone and texture, expression, hair, lighting, background, clothing, and camera framing. Do not change age, gender presentation, ethnicity, body, or identity.`;
+      prompt = `Apply a localized, realistic makeup layer to the original photo: ${lookDescription}. This is a cosmetic edit, not a portrait regeneration or face replacement. Keep the person's identity and facial landmarks aligned with the source image. Preserve face shape, eye shape and position, nose, lip geometry, jawline, expression, natural skin texture, hair, lighting, background, clothing, and camera framing. Change only cosmetic color and texture such as foundation, blush, eyeshadow, eyeliner, mascara, eyebrow makeup, and lip color. Do not reshape, beautify, retouch, age, smooth, or replace the face.`;
     } else {
       const style = text(body.style, 'style', 100);
       const color = text(body.color, 'color', 100);
@@ -384,8 +384,9 @@ async function handleAction(client: OpenAI, body: JsonObject): Promise<unknown> 
       model: imageModel,
       image: imageFile(faceImage),
       prompt,
+      input_fidelity: 'high',
       size: '1024x1024',
-      quality: 'medium',
+      quality: 'high',
     });
     const output = response.data?.[0];
     if (output?.b64_json) return `data:image/png;base64,${output.b64_json}`;
