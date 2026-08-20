@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import aiHandler from './ai';
-import healthHandler from './health';
+import aiHandler from '../api/ai';
+import healthHandler from '../api/health';
 
 function responseMock() {
   const result = { statusCode: 0, body: undefined as unknown, headers: {} as Record<string, string> };
