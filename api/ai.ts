@@ -386,7 +386,7 @@ async function handleAction(client: OpenAI, body: JsonObject): Promise<unknown> 
       prompt,
       input_fidelity: 'high',
       size: 'auto',
-      quality: 'high',
+      quality: 'medium',
     });
     const output = response.data?.[0];
     if (output?.b64_json) return `data:image/png;base64,${output.b64_json}`;
