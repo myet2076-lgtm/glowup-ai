@@ -1,6 +1,7 @@
 
 import React, { useRef, useState } from 'react';
 import { Product } from '../types';
+import { prepareImage } from '../imageUtils';
 
 interface Props {
   currentInventory: (Product & { id: string })[];
@@ -14,18 +15,20 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [manualName, setManualName] = useState('');
   const [manualBrand, setManualBrand] = useState('');
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []) as File[];
-    const photoPromises = files.map(file => {
-      return new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(file);
-      });
-    });
-    Promise.all(photoPromises).then(results => setSelectedPhotos(prev => [...prev, ...results]));
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []).slice(0, 3 - selectedPhotos.length);
+    try {
+      setUploadError(null);
+      const results = await Promise.all(files.map(prepareImage));
+      setSelectedPhotos((prev) => [...prev, ...results].slice(0, 3));
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Could not read those images.');
+    } finally {
+      e.target.value = '';
+    }
   };
 
   const handleManualAdd = () => {
@@ -80,11 +83,12 @@ const InventoryManager: React.FC<Props> = ({ currentInventory, onScan, onAddManu
                 name="inventory-upload"
                 type="file"
                 multiple
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 className="hidden"
                 ref={fileInputRef}
                 onChange={handleFileChange}
               />
+              {uploadError && <p role="alert" className="text-xs text-red-500">{uploadError}</p>}
 
               {selectedPhotos.length > 0 && (
                 <>

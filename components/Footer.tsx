@@ -5,15 +5,15 @@ type ModalPage = 'privacy' | 'terms' | 'faq' | null;
 const PRIVACY_CONTENT = `
 # Privacy Policy
 
-**Last updated: March 2026**
+**Last updated: August 20, 2026**
 
 ## 1. Information We Collect
 
-**Photos you upload:** When you use Glowa's features (Inspiration Lab, Celebrity Twin, Hair Lab, Face Analysis), your photos are sent to OpenAI's API for processing. We do not permanently store your photos on our servers.
+**Photos you upload:** When you use Glowa's AI features, your photos are sent through Glowa's server to OpenAI for processing. Guest photos and results may remain in your browser. If you sign in and enable cloud synchronization, profile photos, analysis inputs, generated images, and results are stored in your Supabase account until deleted.
 
 **Account information:** If you create an account, we store your email address and authentication data via Supabase.
 
-**Analytics:** We use PostHog to collect anonymous usage data (pages visited, features used, device type). This helps us improve the product.
+**Analytics:** When analytics is enabled, we use PostHog to collect limited product events such as pages visited and features used. We disable automatic interaction capture and respect supported browser Do Not Track settings.
 
 **Local storage:** Analysis results, inventory items, and profile photos are stored locally in your browser (IndexedDB) and optionally synced to Supabase if you have an account.
 
@@ -33,8 +33,8 @@ const PRIVACY_CONTENT = `
 
 ## 4. Data Retention
 
-- Photos are processed in real-time and not retained by Glowa after processing
-- Account data is retained until you delete your account
+- Guest data remains in your browser until you clear it
+- Synced account content remains in Supabase until it is deleted or you request account deletion
 - Local data can be cleared by clearing your browser data
 
 ## 5. Your Rights
@@ -52,7 +52,7 @@ For privacy inquiries, email us at **myet2076@gmail.com**
 const TERMS_CONTENT = `
 # Terms of Service
 
-**Last updated: March 2026**
+**Last updated: August 20, 2026**
 
 ## 1. Acceptance of Terms
 
@@ -145,8 +145,8 @@ Guest data is stored locally in your browser (IndexedDB). If you have an account
 **Q: How do I delete my data?**
 Clear your browser data to remove local data. For cloud data, sign in and contact us for account deletion.
 
-**Q: Is my data shared with anyone?**
-No. Your photos and data are never shared. See our Privacy Policy for details on third-party services used for processing.
+**Q: Is my data sent to service providers?**
+Yes. Photos used with AI features are processed by OpenAI, account and synced data are handled by Supabase, and the application is hosted by Vercel. Optional analytics events are sent to PostHog. See our Privacy Policy for details.
 
 ## Contact
 

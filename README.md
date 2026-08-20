@@ -1,20 +1,37 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Glowa
 
-# Run and deploy your AI Studio app
+Glowa is a React/Vite beauty styling application with OpenAI-powered analysis and image editing, optional Supabase authentication/cloud sync, and optional PostHog analytics.
 
-This contains everything you need to run your app locally.
+## Local development
 
-View your app in AI Studio: https://ai.studio/apps/bd2b6250-8efd-4ade-acdb-8f5c2ab08f58
+Prerequisites: Node.js 22 and npm.
 
-## Run Locally
+```bash
+cp .env.example .env.local
+npm install
+npm run dev
+```
 
-**Prerequisites:**  Node.js
+The Vite development server runs the frontend only. AI calls use Vercel serverless functions under `/api`, so use `vercel dev` when testing live AI calls locally or deploy a preview to Vercel.
 
+Never expose `OPENAI_API_KEY` through a `VITE_` variable. It must exist only in the server/runtime environment.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Verification
+
+```bash
+npm run check
+```
+
+This runs TypeScript, Vitest, and the production build. GitHub Actions runs the same command for pushes and pull requests.
+
+## Production deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for required environment variables, Supabase setup, abuse/cost controls, and the release checklist.
+
+## Architecture
+
+- Browser: React 19, Vite, Tailwind, IndexedDB
+- Server: Vercel functions in `api/`
+- AI: OpenAI SDK, called only from the server
+- Optional account sync: Supabase with row-level security
+- Optional analytics: PostHog, with autocapture disabled

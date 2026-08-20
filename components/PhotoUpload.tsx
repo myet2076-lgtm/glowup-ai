@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { prepareImage } from '../imageUtils';
 
 interface Props {
   title: string;
@@ -25,21 +26,25 @@ const PhotoUpload: React.FC<Props> = ({
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [showPfpPrompt, setShowPfpPrompt] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
+      try {
+        setUploadError(null);
+        const result = await prepareImage(file);
         setPreview(result);
         if (!isMasterSet && onSetAsMaster) {
           setShowPfpPrompt(true);
         }
         if (compact) onUpload(result);
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        setUploadError(error instanceof Error ? error.message : 'Could not read that image.');
+      } finally {
+        e.target.value = '';
+      }
     }
   };
 
@@ -158,6 +163,7 @@ const PhotoUpload: React.FC<Props> = ({
         )}
         <input id="photo-upload" name="photo-upload" type="file" accept="image/jpeg,image/png" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
       </div>
+      {uploadError && <p role="alert" className="text-sm text-red-500 text-center">{uploadError}</p>}
     </div>
   );
 };

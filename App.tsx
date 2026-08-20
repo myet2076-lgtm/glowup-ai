@@ -10,6 +10,7 @@ import {
   normalizeProduct,
   generateHairTryOn,
   validateFaceImage,
+  getAiErrorMessage,
 } from './openaiService';
 import {
   saveAnalysis,
@@ -276,7 +277,7 @@ const App: React.FC = () => {
   // Identify user on auth
   useEffect(() => {
     if (user) {
-      identifyUser(user.id, user.email || undefined);
+      identifyUser(user.id);
     } else if (!authLoading) {
       resetUser();
     }
@@ -295,11 +296,7 @@ const App: React.FC = () => {
   };
 
   const validateFace = async (photo: string): Promise<boolean> => {
-    try {
-      return await validateFaceImage(photo.split(',')[1]);
-    } catch {
-      return false;
-    }
+    return validateFaceImage(photo.split(',')[1]);
   };
 
   const validateFaceWithUI = async (photo: string): Promise<boolean> => {
@@ -312,8 +309,8 @@ const App: React.FC = () => {
         return false;
       }
       return true;
-    } catch {
-      alert('Validation failed. Try again with a clear photo.');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Validation failed. Try again with a clear photo.'));
       return false;
     } finally {
       setLoading(false);
@@ -337,8 +334,8 @@ const App: React.FC = () => {
       trackEvent('analysis_completed', { source: 'face-analysis' });
       setFaceAnalysis(result);
       setCurrentPage('face-analysis');
-    } catch {
-      alert('Analysis failed.');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Analysis failed.'));
     } finally {
       setLoading(false);
     }
@@ -365,8 +362,8 @@ const App: React.FC = () => {
         inspoPhoto: null,
         tryOnImage: null,
       });
-    } catch {
-      alert('Quiz error!');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Could not create your look. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -402,8 +399,8 @@ const App: React.FC = () => {
         inspoPhoto: null,
         tryOnImage: null,
       });
-    } catch {
-      alert('Celebrity search failed!');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Celebrity-inspired look failed.'));
     } finally {
       setLoading(false);
     }
@@ -426,8 +423,8 @@ const App: React.FC = () => {
       setAnalysis(result);
       setResultSource('inspiration');
       setCurrentPage('results');
-    } catch {
-      alert('Inspiration failed!');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Inspiration analysis failed.'));
     } finally {
       setLoading(false);
     }
@@ -465,8 +462,8 @@ const App: React.FC = () => {
         inspoPhoto: newInspoPhoto,
         tryOnImage: null,
       });
-    } catch {
-      throw new Error('Analysis failed');
+    } catch (error) {
+      throw new Error(getAiErrorMessage(error, 'Analysis failed'));
     } finally {
       setLoading(false);
     }
@@ -484,8 +481,8 @@ const App: React.FC = () => {
       if (currentAnalysisId) {
         await updateTryOnById(currentAnalysisId, result);
       }
-    } catch {
-      alert('Try-on failed.');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Try-on failed.'));
     } finally {
       setLoading(false);
     }
@@ -513,8 +510,8 @@ const App: React.FC = () => {
       const result = await generateHairTryOn(masterFacePhoto.split(',')[1], style, color, mode);
       trackEvent('hair_tryon_generated', { style, color, mode });
       setHairResultImage(result);
-    } catch {
-      alert('Hair lab failed.');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Hair lab failed.'));
     } finally {
       setLoading(false);
     }
@@ -532,8 +529,8 @@ const App: React.FC = () => {
         await persistInventoryItem(item);
       }
       setInventory((prev) => [...prev, ...itemsWithIds]);
-    } catch {
-      alert('Scan failed.');
+    } catch (error) {
+      alert(getAiErrorMessage(error, 'Product scan failed.'));
     } finally {
       setLoading(false);
     }

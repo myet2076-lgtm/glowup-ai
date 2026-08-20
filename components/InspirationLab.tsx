@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { prepareImage } from '../imageUtils';
 
 interface InspirationLabProps {
   masterFacePhoto: string | null;
@@ -41,16 +42,17 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleInspoFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInspoFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setInspoPhoto(reader.result as string);
+    try {
+      setInspoPhoto(await prepareImage(file));
       setError(null);
-    };
-    reader.readAsDataURL(file);
-    if (inspoFileRef.current) inspoFileRef.current.value = '';
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Could not read that image.');
+    } finally {
+      if (inspoFileRef.current) inspoFileRef.current.value = '';
+    }
   };
 
   const activeFace = localFace || masterFacePhoto;
@@ -62,12 +64,7 @@ const InspirationLab: React.FC<InspirationLabProps> = ({
     if (!file) return;
 
     try {
-      const dataURL = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      const dataURL = await prepareImage(file);
 
       setValidating(true);
       setError(null);

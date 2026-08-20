@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import glowaLogo from '../assets/glowa-logo.png';
+import { prepareImage } from '../imageUtils';
 
 interface Props {
   onHome: () => void;
@@ -29,9 +30,8 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadError(null);
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const dataURL = reader.result as string;
+    try {
+      const dataURL = await prepareImage(file);
       if (validateFace) {
         const ok = await validateFace(dataURL);
         if (!ok) {
@@ -40,8 +40,11 @@ const Header: React.FC<Props> = ({ onHome, onInventory, onWishlist, onRestart, o
         }
       }
       onSetMasterPhoto(dataURL);
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Could not read that image.');
+    } finally {
+      e.target.value = '';
+    }
   };
 
   const aiPages = ['landing', 'quiz', 'celebrity', 'inspiration', 'results', 'face-analysis', 'hair-lab', 'history', 'history-detail'];

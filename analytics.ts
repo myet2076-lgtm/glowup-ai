@@ -1,46 +1,45 @@
-import posthog from 'posthog-js';
+import type { PostHog } from 'posthog-js';
 
-const POSTHOG_KEY = 'phc_RMoGhHqwdxv42V89WK7G3hXURc7ROyHxsthqeC0PntO';
-const POSTHOG_HOST = 'https://us.i.posthog.com';
+const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY;
+const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com';
 
-let initialized = false;
+let analyticsPromise: Promise<PostHog | null> | null = null;
 
-export function initAnalytics() {
-  if (initialized) return;
-  try {
-    posthog.init(POSTHOG_KEY, {
-      api_host: POSTHOG_HOST,
-      autocapture: true,
-      capture_pageview: false, // we track manually for SPA
-      capture_pageleave: true,
-      persistence: 'localStorage+cookie',
-    });
-    initialized = true;
-  } catch {
-    // analytics should never break the app
-  }
+function loadAnalytics(): Promise<PostHog | null> {
+  if (!POSTHOG_KEY || navigator.doNotTrack === '1') return Promise.resolve(null);
+  if (analyticsPromise) return analyticsPromise;
+
+  analyticsPromise = import('posthog-js')
+    .then(({ default: posthog }) => {
+      posthog.init(POSTHOG_KEY, {
+        api_host: POSTHOG_HOST,
+        autocapture: false,
+        capture_pageview: false,
+        capture_pageleave: true,
+        persistence: 'localStorage+cookie',
+      });
+      return posthog;
+    })
+    .catch(() => null);
+  return analyticsPromise;
 }
 
-export function identifyUser(userId: string, email?: string) {
-  try {
-    posthog.identify(userId, email ? { email } : undefined);
-  } catch {}
+export function initAnalytics(): void {
+  void loadAnalytics();
 }
 
-export function resetUser() {
-  try {
-    posthog.reset();
-  } catch {}
+export function identifyUser(userId: string): void {
+  void loadAnalytics().then((posthog) => posthog?.identify(userId));
 }
 
-export function trackPageView(page: string) {
-  try {
-    posthog.capture('$pageview', { page });
-  } catch {}
+export function resetUser(): void {
+  void loadAnalytics().then((posthog) => posthog?.reset());
 }
 
-export function trackEvent(event: string, properties?: Record<string, any>) {
-  try {
-    posthog.capture(event, properties);
-  } catch {}
+export function trackPageView(page: string): void {
+  void loadAnalytics().then((posthog) => posthog?.capture('$pageview', { page }));
+}
+
+export function trackEvent(event: string, properties?: Record<string, unknown>): void {
+  void loadAnalytics().then((posthog) => posthog?.capture(event, properties));
 }
