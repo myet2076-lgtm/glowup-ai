@@ -1,5 +1,6 @@
 import React from 'react';
 import { Product } from '../types';
+import { trackSephoraClick } from '../sephoraAnalytics';
 
 interface Props {
   wishlist: Product[];
@@ -52,6 +53,12 @@ const WishlistView: React.FC<Props> = ({ wishlist, onRemove, onBack }) => {
 
               <a
                 href={`https://www.sephora.com/search?keyword=${encodeURIComponent(`${item.brand || ''} ${item.name}`.trim())}`}
+                onClick={(event) => {
+                  if (!event.defaultPrevented && event.button === 0) void trackSephoraClick(item);
+                }}
+                onAuxClick={(event) => {
+                  if (!event.defaultPrevented && event.button === 1) void trackSephoraClick(item);
+                }}
                 target="_blank"
                 rel="noreferrer"
                 className="block w-full py-3 bg-neutral-900 text-white rounded-none font-medium uppercase tracking-[0.2em] text-center text-[10px] min-h-[44px] hover:bg-black transition-all"

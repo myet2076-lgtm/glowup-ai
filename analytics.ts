@@ -41,5 +41,9 @@ export function trackPageView(page: string): void {
 }
 
 export function trackEvent(event: string, properties?: Record<string, unknown>): void {
-  void loadAnalytics().then((posthog) => posthog?.capture(event, properties));
+  void loadAnalytics().then((posthog) => {
+    if (posthog && !posthog.has_opted_out_capturing()) posthog.capture(event, properties);
+  }).catch(() => {
+    // Tracking failures must not surface as unhandled rejections.
+  });
 }

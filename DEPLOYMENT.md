@@ -83,3 +83,34 @@ On a Vercel preview deployment, verify:
 - Mobile and desktop layouts have no console errors.
 
 Only promote the preview after all checks pass and spend/abuse monitoring is active.
+
+## Sephora click reporting
+
+The wishlist's native Sephora link emits `sephora_link_clicked` through the existing
+optional PostHog client. Properties are `destination: sephora`, `source: wishlist`,
+and `product_id: sha256_v1_<digest>`. The digest groups normalized brand/name pairs
+because recommendations have no catalog ID; it is not a Sephora SKU and cannot show
+human-readable product names. Names, brands, photos, analysis contents, and search
+URLs are not sent by this handler. Event URL context is reduced to the site origin.
+The SDK's existing identity/context behavior otherwise remains in effect.
+
+Only primary/keyboard activation and middle-button auxiliary activation count;
+right-click menus do not count. A browser's “open link” context-menu action cannot
+be measured by this handler. Counts are best effort: Do Not Track, SDK opt-out,
+missing configuration, blockers, network failures and tab closure can omit events.
+Unique PostHog users are browser/account identifiers, not a verified person count.
+Historical missing clicks cannot be recovered.
+
+After approval to release, deploy the reviewed change using the existing Vercel
+workflow. Verify Production retains its existing `VITE_POSTHOG_KEY` and host
+configuration without exposing values; Vite embeds these at build time, so a
+configuration change requires a rebuild. Do not enable global autocapture or
+recording. No PostHog dashboard changes are required to ingest the event.
+
+In PostHog Product analytics, select `sephora_link_clicked`, use **Total count**,
+filter `$host = www.glowa.beauty` and `source = wishlist`, and set the desired dates
+and timezone. Break down by `product_id` for product groups, or by day for trends.
+Use unique users only as a separate approximate metric. Saving an insight or
+changing backend settings is a separate action. Verify ingestion with an explicitly
+authorized staging/test project or the first real production event; do not generate
+fake production clicks as part of local tests.
